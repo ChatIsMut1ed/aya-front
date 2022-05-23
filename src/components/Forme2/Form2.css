@@ -1,0 +1,23 @@
+.zo{border-radius: 15px;
+    border-style: dashed;
+border-color: rgba(0, 100, 0, 0.822);
+padding-top: 12px;
+padding-left: 12px;
+padding-right: 12px;}
+.title3{margin-left:  72%;
+        font-size: medium;}
+.yo{ display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between; }
+    .non{border-radius: 15px;
+        border-style: dashed;
+    border-color: rgba(0, 100, 0, 0.822);
+    padding-top: 12px;
+    padding-left: 12px;
+    padding-right: 12px;}
+    .eo{border-radius: 15px;
+        border-style: dashed;
+    border-color: rgba(0, 100, 0, 0.822);
+    padding-top: 12px;
+    padding-left: 12px;
+    padding-right: 12px;}

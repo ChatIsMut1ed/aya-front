@@ -1,0 +1,209 @@
+{
+  "Header": {
+    "title": "Agro Etudes",
+    "paragraph": "Cabinet spécialisé en études d’Aménagement Hydrau-agricoles"
+  },
+  "About": {
+    "paragraph": "Agro Etudes, est un cabinet spécialisé en études d’Aménagement Hydrau-agricoles agrée par l’APIA (Agence de promotion des investissements Agricoles).  Agro Etudes, qui est opérant dans toute la Tunisie, est installé à la cité El Gazala au gouvernorat d’Ariana. Le Bureau est composé d’ingénieurs spécialisés en Agronomie et vulgarisation agricole, en hydraulique, en environnement, géo ressources, en qualité et fait appel en cas de besoin à d’autres spécialités comme la topographie, la pédologie,la sociologie, la géophysique etc. Le bureau Agro Etudes réalise des études agricoles, hydrauliques, offre des prestations de formation des adultes ,l’encadrement des agriculteurs l’assistance technique dans le domaine des expertises Hydrau_ Agricoles .",
+    "Why": [
+      "Lorem ipsum dolor",
+      "Tempor incididunt",
+      "Lorem ipsum dolor",
+      "Incididunt ut labore"
+    ],
+    "Why2": [
+      "Aliquip ex ea commodo",
+      "Lorem ipsum dolor",
+      "Exercitation ullamco",
+      "Lorem ipsum dolor"
+    ]
+  },
+  "Gallery": [
+    {
+      "title": "Agro Etudes",
+      "largeImage": "img/agro/1.jpg",
+      "smallImage": "img/agro/1.jpg"
+    },
+    {
+      "title": "Agro Etudes",
+      "largeImage": "img/agro/1.jpg",
+      "smallImage": "img/agro/1.jpg"
+    },
+    {
+      "title": "Agro Etudes",
+      "largeImage": "img/agro/1.jpg",
+      "smallImage": "img/agro/1.jpg"
+    },
+    {
+      "title": "Agro Etudes",
+      "largeImage": "img/agro/1.jpg",
+      "smallImage": "img/agro/1.jpg"
+    },
+    {
+      "title": "Agro Etudes",
+      "largeImage": "img/agro/1.jpg",
+      "smallImage": "img/agro/1.jpg"
+    },
+    {
+      "title": "Agro Etudes",
+      "largeImage": "img/agro/1.jpg",
+      "smallImage": "img/agro/1.jpg"
+    },
+    {
+      "title": "Agro Etudes",
+      "largeImage": "img/agro/3.jpg",
+      "smallImage": "img/agro/3.jpg"
+    },
+    {
+      "title": "Agro Etudes",
+      "largeImage": "img/agro/3.jpg",
+      "smallImage": "img/agro/3.jpg"
+    },
+    {
+      "title": "Agro Etudes",
+      "largeImage": "img/agro/3.jpg",
+      "smallImage": "img/agro/3.jpg"
+    }
+  ],
+  "Services": [
+    {
+      "icon": "fa fa-wordpress",
+      "name": "Etude Economique",
+      "text": "1. Le dimensionnement 2. Le génie civile 3. L’aménagement 4. La plantation 5. Les équipements de l’exploitation"
+    },
+    {
+      "icon": "fa fa-cart-arrow-down",
+      "name": "Etude Hydraulique",
+      "text": "1. Superficie 2. Nombre de pieds 3. Nombre de goutteurs 4. Le débit 5. Le longueur des portes rampes"
+    },
+    {
+      "icon": "fa fa-cloud-download",
+      "name": "Assistance Technique",
+      "text": "Une assistance technique et un accompagnement des entreprises et des exploitations agricoles et rurales , toute en assurant la vulgarisation des techniques agricoles modernes."
+    },
+    {
+      "icon": "fa fa-language",
+      "name": "Automatisme - Aménagement du jardin - Installation des réseaux d'irrigations - Expertise",
+      "text": "1. Automatisme 2. Aménagement du jardin 3. Installation des réseaux d'irrigations 4. Expertise"
+    }
+  ],
+  "Testimonials": [
+    {
+      "img": "img/testimonials/01.jpg",
+      "text": "\"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed dapibus leo nec ornare diam sedasd commodo nibh ante facilisis bibendum dolor feugiat at.\"",
+      "name": "John Doe"
+    },
+    {
+      "img": "img/testimonials/02.jpg",
+      "text": "\"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed dapibus leo nec ornare diam sedasd commodo nibh ante facilisis bibendum dolor feugiat at.\"",
+      "name": "Johnathan Doe"
+    },
+    {
+      "img": "img/testimonials/03.jpg",
+      "text": "\"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed dapibus leo nec ornare diam sedasd commodo nibh ante facilisis bibendum dolor feugiat at.\"",
+      "name": "John Doe"
+    },
+    {
+      "img": "img/testimonials/04.jpg",
+      "text": "\"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed dapibus leo nec ornare diam sedasd commodo nibh ante facilisis bibendum dolor feugiat at.\"",
+      "name": "Johnathan Doe"
+    },
+    {
+      "img": "img/testimonials/05.jpg",
+      "text": "\"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed dapibus leo nec ornare diam sedasd commodo nibh ante facilisis bibendum dolor feugiat at.\"",
+      "name": "John Doe"
+    },
+    {
+      "img": "img/testimonials/06.jpg",
+      "text": "\"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed dapibus leo nec ornare diam sedasd commodo nibh ante facilisis bibendum dolor feugiat at.\"",
+      "name": "Johnathan Doe"
+    }
+  ],
+  "Team": [
+    {
+      "img": "img/team/01.jpg",
+      "name": "John Doe",
+      "job": "Director"
+    },
+    {
+      "img": "img/team/02.jpg",
+      "name": "Mike Doe",
+      "job": "Senior Designer"
+    },
+    {
+      "img": "img/team/03.jpg",
+      "name": "Jane Doe",
+      "job": "Senior Designer"
+    },
+    {
+      "img": "img/team/04.jpg",
+      "name": "Karen Doe",
+      "job": "Project Manager"
+    }
+  ],
+  "Contact": {
+    "address": "4023 Sousse, Riadh, CA 35 ",
+    "phone": "+126 123 456 7899",
+    "email": "info@company.com",
+    "facebook": "fb.com",
+    "twitter": "twitter.com",
+    "youtube": "youtube.com"
+  },
+  "Features": [
+    {
+      "icon": "fa fa-comments-o",
+      "title": "Lorem ipsum",
+      "text": "Aspects Socioéconomiques des basses steppes de la Tunisie Centrale (FAO/SIDA). 3 volumes"
+    },
+    {
+      "icon": "fa fa-bullhorn",
+      "title": "Lorem ipsum",
+      "text": "Projet de Réhabilitation des Vergers d’amandier de Sidi Bouzid"
+    },
+    {
+      "icon": "fa fa-group",
+      "title": "Lorem ipsum",
+      "text": "Projet de Réhabilitation de l’Oliveraie de Sfax CRDA Sfax"
+    },
+    {
+      "icon": "fa fa-magic",
+      "title": "Lorem ipsum",
+      "text": "Etude de projet SMVDA (3 études)"
+    },
+    {
+      "icon": "fa fa-comments-o",
+      "title": "Lorem ipsum",
+      "text": "Etude de mise à niveau agricole (2 études)"
+    },
+    {
+      "icon": "fa fa-bullhorn",
+      "title": "Lorem ipsum",
+      "text": "Etudes d’aménagement de Périmètres Publics Irrigués "
+    },
+    {
+      "icon": "fa fa-group",
+      "title": "Lorem ipsum",
+      "text": "Etudes d’aménagement de Périmètres privés Irrigués (Une trentaine d’études) "
+    },
+    {
+      "icon": "fa fa-magic",
+      "title": "Lorem ipsum",
+      "text": "Création de vergers de primeur"
+    },
+    {
+      "icon": "fa fa-comments-o",
+      "title": "Lorem ipsum",
+      "text": "Etude d’irrigation par l’osmose inverse et son impact sur l’environnement"
+    },
+    {
+      "icon": "fa fa-bullhorn",
+      "title": "Lorem ipsum",
+      "text": "Etude de projet d’énergie renouvelable (Energie par photovoltaïque)"
+    },
+    {
+      "icon": "fa fa-group",
+      "title": "Lorem ipsum",
+      "text": "Co-Encadrements d’une douzaine d’étudiants master et élèves Ingénieurs des projets de fin d’études : en environnement, irrigation, étude d’impact et applications informatiques Agro Tec."
+    }
+  ]
+}
