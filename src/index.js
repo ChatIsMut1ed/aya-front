@@ -4,7 +4,7 @@ import ReactDOM from "react-dom";
 import App from "./App";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
-//import * as serviceWorker from './serviceWorker';
+import { AuthProvider } from "./stores/auth.store";
 import { HashRouter } from "react-router-dom";
 import ScrollToTop from "./ScrollToTop";
 // Create a client
@@ -13,8 +13,10 @@ ReactDOM.render(
     <HashRouter>
         <ScrollToTop>
             <QueryClientProvider client={queryClient}>
-                <App></App>
-                <ReactQueryDevtools initialIsOpen={false} />
+                <AuthProvider>
+                    <App />
+                    <ReactQueryDevtools closeButtonProps={{ style: { top: 0, bottom: "unset" } }} initialIsOpen={false} />
+                </AuthProvider>
             </QueryClientProvider>
         </ScrollToTop>
     </HashRouter>,

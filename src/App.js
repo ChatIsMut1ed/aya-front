@@ -69,14 +69,14 @@ import { DemandeForageEau } from "./components/DemandeForageEau/DemandeForageEau
 import { Notification } from "./components/Notification/Notification";
 
 // Custom Hooks
-import useAuth from "./Hooks/useAuth.js";
+import { useAuth } from "./Hooks/api/auth.api.js";
 
 const App = () => {
     const [layoutMode, setLayoutMode] = useState("static");
     const [layoutColorMode, setLayoutColorMode] = useState("light");
     const [inputStyle, setInputStyle] = useState("outlined");
     const [ripple, setRipple] = useState(true);
-    const [staticMenuInactive, setStaticMenuInactive] = useState(false);
+    const [staticMenuInactive, setStaticMenuInactive] = useState(true);
     const [overlayMenuActive, setOverlayMenuActive] = useState(false);
     const [mobileMenuActive, setMobileMenuActive] = useState(false);
     const [mobileTopbarMenuActive, setMobileTopbarMenuActive] = useState(false);

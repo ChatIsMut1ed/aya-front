@@ -6,6 +6,10 @@ import { Menu } from "primereact/menu";
 export const AppTopbar = (props) => {
     const menu = useRef(null);
     const toast = useRef(null);
+    const handleLogout = () => {
+        // logout
+        window.location.hash = "/login";
+    };
     const items = [
         {
             label: "Paramétre",
@@ -20,8 +24,8 @@ export const AppTopbar = (props) => {
                 {
                     label: "Logout",
                     icon: "pi pi-times",
-                    command: () => {
-                        window.location.hash = "/login";
+                    command: (event) => {
+                        handleLogout(event);
                     },
                 },
             ],
