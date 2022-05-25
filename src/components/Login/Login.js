@@ -23,16 +23,16 @@ export const Login = () => {
         loginForm.password = loginForm.password.trim();
         // console.log(loginForm);
         try {
-            const result = await loginUserMutation.mutateAsync(loginForm);
-            // const result = {
-            //     data: {
-            //         login_status: "successful",
-            //         user: {
-            //             username: "ala",
-            //             age: 28,
-            //         },
-            //     },
-            // };
+            // const result = await loginUserMutation.mutateAsync(loginForm);
+            const result = {
+                data: {
+                    login_status: "successful",
+                    user: {
+                        username: "ala",
+                        age: 28,
+                    },
+                },
+            };
             if (result.data.login_status === "already_logged") {
                 history.push("Contact");
             }

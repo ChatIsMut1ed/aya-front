@@ -13,6 +13,10 @@ import { InputNumber } from "primereact/inputnumber";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 import { ProductService } from "../../service/ProductService";
+import { Skeleton } from "primereact/skeleton";
+import { Link, useHistory } from "react-router-dom";
+import { useContact } from "../../Hooks/api/contact.api";
+import { useAuthDispatch } from "../../stores/auth.store.js";
 
 export const Contact = () => {
     let emptyProduct = {
@@ -26,6 +30,10 @@ export const Contact = () => {
         rating: 0,
         inventoryStatus: "INSTOCK",
     };
+    // work
+    const contactQuery = useContact();
+    const authDispatch = useAuthDispatch();
+    const history = useHistory();
 
     const [products, setProducts] = useState(null);
     const [productDialog, setProductDialog] = useState(false);
@@ -293,6 +301,9 @@ export const Contact = () => {
         </>
     );
 
+    const skeletonTemplate = () => {
+        return <Skeleton></Skeleton>;
+    };
     return (
         <div className="grid crud-demo">
             <div className="col-12">
@@ -300,29 +311,44 @@ export const Contact = () => {
                     <Toast ref={toast} />
                     <Toolbar className="mb-4" left={leftToolbarTemplate} right={rightToolbarTemplate}></Toolbar>
 
-                    <DataTable
-                        ref={dt}
-                        value={products}
-                        selection={selectedProducts}
-                        onSelectionChange={(e) => setSelectedProducts(e.value)}
-                        dataKey="id"
-                        paginator
-                        rows={10}
-                        rowsPerPageOptions={[5, 10, 25]}
-                        className="datatable-responsive"
-                        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
-                        globalFilter={globalFilter}
-                        emptyMessage="No products found."
-                        header={header}
-                        responsiveLayout="scroll"
-                    >
-                        <Column selectionMode="multiple" headerStyle={{ width: "3rem" }}></Column>
-                        <Column field="code" header="IDUtilisateur" sortable body={codeBodyTemplate} headerStyle={{ width: "50%", minWidth: "10rem" }} className="bg-cyan-400 border-round-top"></Column>
-                        <Column field="price" header="Message" body={priceBodyTemplate} sortable headerStyle={{ width: "50%", minWidth: "8rem" }} className="bg-pink-200 border-round-top"></Column>
+                    {contactQuery.isIdle || contactQuery.isLoading ? (
+                        <>
+                            {[1, 2, 3, 4].map((n) => (
+                                <DataTable value={products} className="p-datatable-striped">
+                                    <Column selectionMode="multiple" headerStyle={{ width: "3rem" }} body={skeletonTemplate}></Column>
+                                    <Column field="code" header="IDUtilisateur" sortable body={skeletonTemplate} headerStyle={{ width: "50%", minWidth: "10rem" }} className="bg-cyan-400 border-round-top"></Column>
+                                    <Column field="price" header="Message" body={skeletonTemplate} sortable headerStyle={{ width: "50%", minWidth: "8rem" }} className="bg-pink-200 border-round-top"></Column>
+                                    <Column body={skeletonTemplate} style={{ width: "20px" }}></Column>
+                                </DataTable>
+                            ))}
+                        </>
+                    ) : contactQuery.isSuccess ? (
+                        <DataTable
+                            ref={dt}
+                            value={products}
+                            selection={selectedProducts}
+                            onSelectionChange={(e) => setSelectedProducts(e.value)}
+                            dataKey="id"
+                            paginator
+                            rows={10}
+                            rowsPerPageOptions={[5, 10, 25]}
+                            className="datatable-responsive"
+                            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+                            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
+                            globalFilter={globalFilter}
+                            emptyMessage="No products found."
+                            header={header}
+                            responsiveLayout="scroll"
+                        >
+                            <Column selectionMode="multiple" headerStyle={{ width: "3rem" }}></Column>
+                            <Column field="code" header="IDUtilisateur" sortable body={codeBodyTemplate} headerStyle={{ width: "50%", minWidth: "10rem" }} className="bg-cyan-400 border-round-top"></Column>
+                            <Column field="price" header="Message" body={priceBodyTemplate} sortable headerStyle={{ width: "50%", minWidth: "8rem" }} className="bg-pink-200 border-round-top"></Column>
 
-                        <Column body={actionBodyTemplate} style={{ width: "20px" }}></Column>
-                    </DataTable>
+                            <Column body={actionBodyTemplate} style={{ width: "20px" }}></Column>
+                        </DataTable>
+                    ) : (
+                        ""
+                    )}
 
                     <Dialog visible={productDialog} style={{ width: "450px" }} header="Product Details" modal className="p-fluid" footer={productDialogFooter} onHide={hideDialog}>
                         <img src="./logo.jpg" alt={product.image} width="150" className="mt-0 mx-auto mb-5 block shadow-2" />

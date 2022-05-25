@@ -14,17 +14,27 @@ import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 import { ProductService } from "../../service/ProductService";
 
+import { Skeleton } from "primereact/skeleton";
+import { Link, useHistory } from "react-router-dom";
+import { useFacture, useFactureById, useDeleteFactureById, useCreateFacture, useModifyFacture } from "../../Hooks/api/facture.api";
+import { useAuthDispatch } from "../../stores/auth.store.js";
 export const Facture = () => {
+    // work
+    const FacturesQuery = useFacture();
+    const FactureByIdQuery = useFactureById();
+    const FactureDeleteByIdQuery = useDeleteFactureById();
+    const FactureCreateQuery = useCreateFacture();
+    const FactureModifyQuery = useModifyFacture();
+    const authDispatch = useAuthDispatch();
+    const history = useHistory();
+
+    const [formErrors, setFormErrors] = useState({});
     let emptyProduct = {
         id: null,
-        name: "",
-        image: null,
-        description: "",
-        category: null,
-        price: 0,
-        quantity: 0,
-        rating: 0,
-        inventoryStatus: "INSTOCK",
+        id_facture: null,
+        qts: "",
+        date: "",
+        tel: null,
     };
 
     const [products, setProducts] = useState(null);
@@ -67,28 +77,67 @@ export const Facture = () => {
         setDeleteProductsDialog(false);
     };
 
-    const saveProduct = () => {
+    const saveProduct = async (e) => {
+        e.preventDefault();
         setSubmitted(true);
+        setFormErrors({});
+        const formData = new FormData();
 
-        if (product.name.trim()) {
-            let _products = [...products];
-            let _product = { ...product };
-            if (product.id) {
-                const index = findIndexById(product.id);
-
-                _products[index] = _product;
-                toast.current.show({ severity: "success", summary: "Successful", detail: "Product Updated", life: 3000 });
-            } else {
-                _product.id = createId();
-                _product.image = "product-placeholder.svg";
-                _products.push(_product);
-                toast.current.show({ severity: "success", summary: "Successful", detail: "Product Created", life: 3000 });
-            }
-
-            setProducts(_products);
-            setProductDialog(false);
-            setProduct(emptyProduct);
+        for (let [key, value] of Object.entries(product)) {
+            // product[key] = key !== "logo" ? value.trim() : value;
+            formData.append(key, value);
         }
+        if (product.id == null) {
+            try {
+                await FactureCreateQuery.mutateAsync(formData);
+                history.push({
+                    pathname: "/Facture",
+                });
+                setProducts(products);
+                setProductDialog(false);
+                setProduct(emptyProduct);
+                toast.current.show({ severity: "success", summary: "Successful", detail: "Product Created", life: 3000 });
+            } catch (error) {
+                const errorsObject = error?.response?.data?.errors;
+                setFormErrors(errorsObject);
+                toast.current.show({ severity: "error", summary: "Error Create", detail: `${errorsObject}`, life: 3000 });
+            }
+        } else {
+            try {
+                await FactureModifyQuery.mutateAsync(formData);
+                history.push({
+                    pathname: "/Facture",
+                });
+                setProducts(products);
+                setProductDialog(false);
+                setProduct(emptyProduct);
+                toast.current.show({ severity: "success", summary: "Successful", detail: "Product Created", life: 3000 });
+            } catch (error) {
+                const errorsObject = error?.response?.data?.errors;
+                setFormErrors(errorsObject);
+                toast.current.show({ severity: "error", summary: "Error Update", detail: `${errorsObject}`, life: 3000 });
+            }
+        }
+
+        // if (product.name.trim()) {
+        //     let _products = [...products];
+        //     let _product = { ...product };
+        //     if (product.id) {
+        //         const index = findIndexById(product.id);
+
+        //         _products[index] = _product;
+        //         toast.current.show({ severity: "success", summary: "Successful", detail: "Product Updated", life: 3000 });
+        //     } else {
+        //         _product.id = createId();
+        //         _product.image = "product-placeholder.svg";
+        //         _products.push(_product);
+        //         toast.current.show({ severity: "success", summary: "Successful", detail: "Product Created", life: 3000 });
+        //     }
+
+        //     setProducts(_products);
+        //     setProductDialog(false);
+        //     setProduct(emptyProduct);
+        // }
     };
 
     const editProduct = (product) => {
@@ -105,12 +154,26 @@ export const Facture = () => {
         setDeleteProductDialog(true);
     };
 
-    const deleteProduct = () => {
-        let _products = products.filter((val) => val.id !== product.id);
-        setProducts(_products);
-        setDeleteProductDialog(false);
-        setProduct(emptyProduct);
-        toast.current.show({ severity: "success", summary: "Successful", detail: "Product Deleted", life: 3000 });
+    const deleteProduct = async (e) => {
+        // let _products = products.filter((val) => val.id !== product.id);
+        // setProducts(_products);
+        // setDeleteProductDialog(false);
+        // setProduct(emptyProduct);
+        // toast.current.show({ severity: "success", summary: "Successful", detail: "Product Deleted", life: 3000 });
+        try {
+            await FactureDeleteByIdQuery.mutateAsync(product.id);
+            history.push({
+                pathname: "/Facture",
+            });
+            setProducts(products);
+            setDeleteProductDialog(false);
+            setProduct(emptyProduct);
+            toast.current.show({ severity: "success", summary: "Successful", detail: "Product Created", life: 3000 });
+        } catch (error) {
+            const errorsObject = error?.response?.data?.errors;
+            setFormErrors(errorsObject);
+            toast.current.show({ severity: "error", summary: "Error Delete", detail: `${errorsObject}`, life: 3000 });
+        }
     };
 
     const findIndexById = (id) => {
@@ -142,7 +205,7 @@ export const Facture = () => {
         setDeleteProductsDialog(true);
     };
 
-    const deleteSelectedProducts = () => {
+    const deleteSelectedProducts = async (e) => {
         let _products = products.filter((val) => !selectedProducts.includes(val));
         setProducts(_products);
         setDeleteProductsDialog(false);
@@ -292,66 +355,95 @@ export const Facture = () => {
             <Button label="Yes" icon="pi pi-check" className="p-button-text" onClick={deleteSelectedProducts} />
         </>
     );
-
+    const skeletonTemplate = () => {
+        return <Skeleton></Skeleton>;
+    };
     return (
         <div className="grid crud-demo">
             <div className="col-12">
                 <div className="card">
                     <Toast ref={toast} />
                     <Toolbar className="mb-4" left={leftToolbarTemplate} right={rightToolbarTemplate}></Toolbar>
+                    {FacturesQuery.isIdle || FacturesQuery.isLoading ? (
+                        <>
+                            {[1, 2, 3, 4].map((n) => (
+                                <DataTable value={products} className="p-datatable-striped">
+                                    <Column selectionMode="multiple" headerStyle={{ width: "3rem" }}></Column>
+                                    <Column field="code" header="Quantité" sortable body={skeletonTemplate} headerStyle={{ width: "25%", minWidth: "10rem" }} className="bg-cyan-400 border-round-top"></Column>
+                                    <Column field="name" header="IDFacture" sortable body={skeletonTemplate} headerStyle={{ width: "25%", minWidth: "10rem" }} className="bg-indigo-300 border-round-top"></Column>
 
-                    <DataTable
-                        ref={dt}
-                        value={products}
-                        selection={selectedProducts}
-                        onSelectionChange={(e) => setSelectedProducts(e.value)}
-                        dataKey="id"
-                        paginator
-                        rows={10}
-                        rowsPerPageOptions={[5, 10, 25]}
-                        className="datatable-responsive"
-                        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
-                        globalFilter={globalFilter}
-                        emptyMessage="No products found."
-                        header={header}
-                        responsiveLayout="scroll"
-                    >
-                        <Column selectionMode="multiple" headerStyle={{ width: "3rem" }}></Column>
-                        <Column field="code" header="Quantité" sortable body={codeBodyTemplate} headerStyle={{ width: "25%", minWidth: "10rem" }} className="bg-cyan-400 border-round-top"></Column>
-                        <Column field="name" header="IDFacture" sortable body={nameBodyTemplate} headerStyle={{ width: "25%", minWidth: "10rem" }} className="bg-indigo-300 border-round-top"></Column>
+                                    <Column header="Date" body={skeletonTemplate} headerStyle={{ width: "25%", minWidth: "10rem" }} className="bg-green-300 border-round-top"></Column>
+                                    <Column field="Doit" header="Tel" body={skeletonTemplate} sortable headerStyle={{ width: "25%", minWidth: "8rem" }} className="bg-pink-200 border-round-top"></Column>
 
-                        <Column header="Date" body={imageBodyTemplate} headerStyle={{ width: "25%", minWidth: "10rem" }} className="bg-green-300 border-round-top"></Column>
-                        <Column field="Doit" header="Tel" body={priceBodyTemplate} sortable headerStyle={{ width: "25%", minWidth: "8rem" }} className="bg-pink-200 border-round-top"></Column>
+                                    <Column body={skeletonTemplate} style={{ width: "20px" }}></Column>
+                                </DataTable>
+                            ))}
+                        </>
+                    ) : FacturesQuery.isSuccess ? (
+                        <DataTable
+                            ref={dt}
+                            value={products}
+                            selection={selectedProducts}
+                            onSelectionChange={(e) => setSelectedProducts(e.value)}
+                            dataKey="id"
+                            paginator
+                            rows={10}
+                            rowsPerPageOptions={[5, 10, 25]}
+                            className="datatable-responsive"
+                            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+                            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
+                            globalFilter={globalFilter}
+                            emptyMessage="No products found."
+                            header={header}
+                            responsiveLayout="scroll"
+                        >
+                            <Column selectionMode="multiple" headerStyle={{ width: "3rem" }}></Column>
+                            <Column field="code" header="Quantité" sortable body={codeBodyTemplate} headerStyle={{ width: "25%", minWidth: "10rem" }} className="bg-cyan-400 border-round-top"></Column>
+                            <Column field="name" header="IDFacture" sortable body={nameBodyTemplate} headerStyle={{ width: "25%", minWidth: "10rem" }} className="bg-indigo-300 border-round-top"></Column>
 
-                        <Column body={actionBodyTemplate} style={{ width: "20px" }}></Column>
-                    </DataTable>
+                            <Column header="Date" body={imageBodyTemplate} headerStyle={{ width: "25%", minWidth: "10rem" }} className="bg-green-300 border-round-top"></Column>
+                            <Column field="Doit" header="Tel" body={priceBodyTemplate} sortable headerStyle={{ width: "25%", minWidth: "8rem" }} className="bg-pink-200 border-round-top"></Column>
+
+                            <Column body={actionBodyTemplate} style={{ width: "20px" }}></Column>
+                        </DataTable>
+                    ) : (
+                        ""
+                    )}
 
                     <Dialog visible={productDialog} style={{ width: "450px" }} header="Product Details" modal className="p-fluid" footer={productDialogFooter} onHide={hideDialog}>
-                        {product.image && <img src={`assets/demo/images/product/${product.image}`} alt={product.image} width="150" className="mt-0 mx-auto mb-5 block shadow-2" />}
+                        {/* {product.image && <img src={`assets/demo/images/product/${product.image}`} alt={product.image} width="150" className="mt-0 mx-auto mb-5 block shadow-2" />} */}
                         <div className="field">
                             <label htmlFor="Quantité">Quantité</label>
-                            <InputText id="Quantité" value={product.name} onChange={(e) => onInputChange(e, "name")} required autoFocus className={classNames({ "p-invalid": submitted && !product.name })} />
-                            {submitted && !product.name && <small className="p-invalid">Quantité is required.</small>}
+                            <InputText id="Quantité" value={product.id_facture} onChange={(e) => onInputChange(e, "id_facture")} required autoFocus className={classNames({ "p-invalid": submitted && !product.id_facture })} />
+                            {/* {submitted && !product.name && <small className="p-invalid">Quantité is required.</small>} */}
                         </div>
                         <div className="field">
                             <label htmlFor="IDFacture">IDFacture</label>
-                            <InputText id="IDFacture" value={product.name} onChange={(e) => onInputChange(e, "name")} required autoFocus className={classNames({ "p-invalid": submitted && !product.name })} />
-                            {submitted && !product.name && <small className="p-invalid">TVA ID is required.</small>}
+                            <InputText id="IDFacture" value={product.qts} onChange={(e) => onInputChange(e, "qts")} required autoFocus className={classNames({ "p-invalid": submitted && !product.qts })} />
+                            {/* {submitted && !product.name && <small className="p-invalid">TVA ID is required.</small>} */}
                         </div>
                         <div className="field">
                             <label htmlFor="Date">Date</label>
-                            <InputText id="Date" value={product.name} onChange={(e) => onInputChange(e, "name")} required autoFocus className={classNames({ "p-invalid": submitted && !product.name })} />
-                            {submitted && !product.name && <small className="p-invalid">Name is required.</small>}
+                            <InputText id="Date" value={product.date} onChange={(e) => onInputChange(e, "date")} required autoFocus className={classNames({ "p-invalid": submitted && !product.date })} />
+                            {/* {submitted && !product.name && <small className="p-invalid">Name is required.</small>} */}
                         </div>
                         <div className="field">
                             <label htmlFor="TEL">TEL</label>
-                            <InputText id="TEL" value={product.name} onChange={(e) => onInputChange(e, "name")} required autoFocus className={classNames({ "p-invalid": submitted && !product.name })} />
-                            {submitted && !product.name && <small className="p-invalid">Name is required.</small>}
+                            <InputText id="TEL" value={product.tel} onChange={(e) => onInputChange(e, "tel")} required autoFocus className={classNames({ "p-invalid": submitted && !product.tel })} />
+                            {/* {submitted && !product.name && <small className="p-invalid">Name is required.</small>} */}
                         </div>
                     </Dialog>
                     <Dialog visible={factureDialog} style={{ width: "450px" }} header="Product Details" modal className="p-fluid" footer={productDialogFooter} onHide={hideDialog}>
-                        <aside className="profile-card" />
+                        {FactureByIdQuery.isIdle || FactureByIdQuery.isLoading ? (
+                            <>
+                                <skeletonTemplate />
+                            </>
+                        ) : FactureByIdQuery.isSuccess ? (
+                            ""
+                        ) : (
+                            ""
+                        )}
+                        {/* <aside className="profile-card" />
                         <section className="product">
                             <div className="product__photo">
                                 <div className="photo-container">
@@ -422,7 +514,7 @@ export const Facture = () => {
                             <p>
                                 Design from <a href="https://dribbble.com/shots/5216438-Daily-UI-012">dribbble shot</a> of <a href="https://dribbble.com/rodrigorramos">Rodrigo Ramos</a>
                             </p>
-                        </footer>
+                        </footer> */}
                     </Dialog>
 
                     <Dialog visible={deleteProductDialog} style={{ width: "450px" }} header="Confirm" modal footer={deleteProductDialogFooter} onHide={hideDeleteProductDialog}>

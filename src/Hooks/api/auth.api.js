@@ -56,7 +56,7 @@ export function useLogoutUser() {
                 // 	type: "REMOVE_LOGGED_IN_USER",
                 // });
 
-                window.location.href = "/login";
+                window.location.hash = "/login";
             },
         }
     );
