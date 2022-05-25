@@ -184,56 +184,61 @@ const App = () => {
 
     const menuAdmin = [
         {
-            // label: 'Menu',
-            // items: [{
-            //     label: 'Dashboard', icon: 'pi pi-chart-bar', to: '/'
-            // },
-            //   {
-            //     label: 'Portfolio', icon: 'pi pi-wallet', to: '/Portfolio',
-            //     command:(e)=>{ menuClick = true;
-            //         if (isDesktop()) {
-            //             if (layoutMode === 'overlay') {
-            //                 if (mobileMenuActive === true) {
-            //                     setOverlayMenuActive(true);
-            //                 }
-            //                 setOverlayMenuActive((prevState) => !prevState);
-            //                 setMobileMenuActive(false);
-            //             }
-            //             else if (layoutMode === 'static') {
-            //                 setStaticMenuInactive((prevState) => !prevState);
-            //             }
-            //         }
-            //         else {
-            //             setMobileMenuActive((prevState) => !prevState);
-            //         }
-            //         window.location.hash="/Portfolio"; }
-            // },
-            // {
-            //     label: 'Gestionnaire des fichiers', icon: 'pi pi-money-bill', to: '',
-            //     items: [{
-            //         label: 'gestion du facture', icon: 'pi pi-chart-bar', to: '',
-            //     },
-            //     {
-            //         label: 'gestion devis', icon: 'pi pi-chart-bar', to: '',
-            //     },
-            //     {
-            //         label: 'Etude de projet', icon: 'pi pi-chart-bar', to: '',
-            //     },
-            //     {
-            //         label: 'Etude de projet', icon: 'pi pi-chart-bar', to: '',
-            //     },
-            //     {
-            //         label: ' demmande des fichers', icon: 'pi pi-chart-bar', to: '',
-            //     },
-            // ]
-            // },
-            // {
-            //     label: 'Inscription', icon: 'pi pi-calendar-times', to: '/Inscription'
-            // },
-            // {
-            //     label: 'Login', icon: 'pi pi-calendar-times', to: '/Login'
-            // },
-            // ]
+            label: "Menu",
+            items: [
+                {
+                    label: "Dashboard",
+                    icon: "pi pi-chart-bar",
+                    to: "/",
+                },
+                {
+                    label: "Portfolio",
+                    icon: "pi pi-wallet",
+                    to: "/Portfolio",
+                    command: (e) => {
+                        menuClick = true;
+                        if (isDesktop()) {
+                            if (layoutMode === "overlay") {
+                                if (mobileMenuActive === true) {
+                                    setOverlayMenuActive(true);
+                                }
+                                setOverlayMenuActive((prevState) => !prevState);
+                                setMobileMenuActive(false);
+                            } else if (layoutMode === "static") {
+                                setStaticMenuInactive((prevState) => !prevState);
+                            }
+                        } else {
+                            setMobileMenuActive((prevState) => !prevState);
+                        }
+                        window.location.hash = "/Portfolio";
+                    },
+                },
+                // {
+                //     label: 'Gestionnaire des fichiers', icon: 'pi pi-money-bill', to: '',
+                //     items: [{
+                //         label: 'gestion du facture', icon: 'pi pi-chart-bar', to: '',
+                //     },
+                //     {
+                //         label: 'gestion devis', icon: 'pi pi-chart-bar', to: '',
+                //     },
+                //     {
+                //         label: 'Etude de projet', icon: 'pi pi-chart-bar', to: '',
+                //     },
+                //     {
+                //         label: 'Etude de projet', icon: 'pi pi-chart-bar', to: '',
+                //     },
+                //     {
+                //         label: ' demmande des fichers', icon: 'pi pi-chart-bar', to: '',
+                //     },
+                // ]
+                // },
+                // {
+                //     label: 'Inscription', icon: 'pi pi-calendar-times', to: '/Inscription'
+                // },
+                // {
+                //     label: 'Login', icon: 'pi pi-calendar-times', to: '/Login'
+                // },
+            ],
         },
         //    {
         //         label: 'UI Components', icon: 'pi pi-fw pi-sitemap',

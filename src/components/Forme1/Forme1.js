@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Calendar } from "primereact/calendar";
 import { Link, useHistory } from "react-router-dom";
 
-import { useSolUser } from "../../Hooks/api/sol.api";
+import { useSol } from "../../Hooks/api/sol.api";
 import { useAuthDispatch } from "../../stores/auth.store.js";
 
 export const Forme1 = () => {
@@ -33,7 +33,7 @@ export const Forme1 = () => {
 
     const [SolFormErrors, setSolFormErrors] = useState({});
 
-    const SolUserMutation = useSolUser();
+    const SolUserMutation = useSol();
 
     const handleSubmit = async (e) => {
         e.preventDefault();

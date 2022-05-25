@@ -5,10 +5,10 @@ import { useHistory } from "react-router-dom";
 import { useAuthDispatch, useAuthStore } from "../../stores/auth.store";
 
 // fake api https://jsonplaceholder.typicode.com/todos/1
-export const useActivity = () => {
+export const useObject = () => {
     const authStore = useAuthStore();
 
-    return useQuery(["Activitys"], () => axios.get(`Activity`).then((res) => res.data), {
+    return useQuery(["Objects"], () => axios.get(`Object`).then((res) => res.data), {
         enabled: authStore?.isLoggedIn === true && true,
         onSuccess: () => {},
         onError: () => {},
@@ -16,12 +16,12 @@ export const useActivity = () => {
     });
 };
 
-export const useActivityById = () => {
+export const useObjectById = () => {
     const authStore = useAuthStore();
 
     return useMutation(
         async (values) => {
-            const res = await axios.get(`Activity/${values}`);
+            const res = await axios.get(`Object/${values}`);
             return res.data;
         },
         {
@@ -31,12 +31,12 @@ export const useActivityById = () => {
     );
 };
 
-export const useDeleteActivityById = () => {
+export const useDeleteObjectById = () => {
     const authStore = useAuthStore();
 
     return useMutation(
         async (values) => {
-            const res = await axios.get(`Activity/${values}`);
+            const res = await axios.get(`Object/${values}`);
             return res.data;
         },
         {
@@ -46,12 +46,12 @@ export const useDeleteActivityById = () => {
     );
 };
 
-export const useCreateActivity = () => {
+export const useCreateObject = () => {
     const authStore = useAuthStore();
 
     return useMutation(
         async (values) => {
-            const res = await axios.post("Activity", values);
+            const res = await axios.post("Object", values);
             return res.data;
         },
         {
@@ -67,7 +67,7 @@ export const useModifyObj = () => {
 
     return useMutation(
         async (values) => {
-            const res = await axios.put(`Activity/${values.id}`, values);
+            const res = await axios.put(`Object/${values.id}`, values);
             return res.data;
         },
         {

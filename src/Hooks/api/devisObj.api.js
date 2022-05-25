@@ -5,7 +5,7 @@ import { useHistory } from "react-router-dom";
 import { useAuthDispatch, useAuthStore } from "../../stores/auth.store";
 
 // fake api https://jsonplaceholder.typicode.com/todos/1
-export const useDevisObbj = () => {
+export const useDevisObj = () => {
     const authStore = useAuthStore();
 
     return useQuery(["DevisObbjs"], () => axios.get(`DevisObbj`).then((res) => res.data), {
