@@ -73,7 +73,7 @@ export const useCreateDecla = () => {
 
     return useMutation(
         async (values) => {
-            const res = await axios.post("decla", values);
+            const res = await axios.post("declaraction", values);
             return res.data;
         },
         {

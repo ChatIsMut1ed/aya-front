@@ -466,6 +466,7 @@ const App = () => {
                     {userType === "admin" && (
                         <>
                             <Route path="/crud" component={Crud} />
+                            <Route path="/notification" component={Notification} />
                             <Route path="/empty" component={EmptyPage} />
                             <Route path="/Portfolio" component={Portfolio} />
                             <Route path="/Inscription" component={Inscription} />
@@ -488,7 +489,7 @@ const App = () => {
                             <Route path="/Objet" component={Objet} />
                             <Route path="/DemandeExpertiseSol" component={DemandeExpertiseSol} />
                             <Route path="/DemandeForageEau" component={DemandeForageEau} />
-                            <Route path="/Notification" component={Notification} />
+                            {/* <Route path="/Notification" component={Notification} /> */}
                         </>
                     )}
 

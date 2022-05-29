@@ -15,10 +15,10 @@ export const AppTopbar = (props) => {
             label: "Paramétre",
             items: [
                 {
-                    label: "Profile",
+                    label: "Notification",
                     icon: "pi pi-user-edit",
                     command: () => {
-                        window.location.hash = "/profile";
+                        window.location.hash = "/notification";
                     },
                 },
                 {

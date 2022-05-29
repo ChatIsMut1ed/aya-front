@@ -33,6 +33,13 @@ export const Facture = () => {
     const onCityChange = (e) => {
         setSelectedCity1(e.value);
     };
+    const cols = [
+        { header: "Quantité", field: "qts" },
+        { header: "IDActivie", field: "act_id" },
+        { header: "Date", field: "date" },
+        { header: "Doit", field: "doit" },
+    ];
+
     const [formErrors, setFormErrors] = useState({});
     let emptyProduct = {
         id: null,
@@ -52,7 +59,16 @@ export const Facture = () => {
     const [globalFilter, setGlobalFilter] = useState(null);
     const toast = useRef(null);
     const dt = useRef(null);
-
+    const exportColumns = cols.map((col) => ({ title: col.header, dataKey: col.field }));
+    const exportPdf = () => {
+        import("jspdf").then((jsPDF) => {
+            import("jspdf-autotable").then(() => {
+                const doc = new jsPDF.default(0, 0);
+                doc.autoTable(exportColumns, FacturesQuery.data);
+                doc.save("factures.pdf");
+            });
+        });
+    };
     useEffect(() => {
         const productService = new ProductService();
         productService.getProducts().then((data) => setProducts(data));
@@ -144,7 +160,10 @@ export const Facture = () => {
         //     setProduct(emptyProduct);
         // }
     };
-
+    const saveProduct1 = async (e) => {
+        e.preventDefault();
+        setfactureDialog(false);
+    };
     const editProduct = (product) => {
         setProduct({ ...product });
         setProductDialog(true);
@@ -254,7 +273,7 @@ export const Facture = () => {
     const rightToolbarTemplate = () => {
         return (
             <React.Fragment>
-                <Button label="Export" icon="pi pi-upload" className="p-button-help bg-green-400 border-green-400" onClick={exportCSV} />
+                <Button label="Export" icon="pi pi-upload" className="p-button-help bg-green-400 border-green-400" onClick={exportPdf} />
             </React.Fragment>
         );
     };
@@ -349,6 +368,12 @@ export const Facture = () => {
             <Button label="Save" icon="pi pi-check" className="p-button-text" onClick={saveProduct} />
         </>
     );
+    const productDialogFooter1 = (
+        <>
+            {/* <Button label="Cancel" icon="pi pi-times" className="p-button-text" onClick={hideDialog} /> */}
+            <Button label="OK" icon="pi pi-check" className="p-button-text" onClick={saveProduct1} />
+        </>
+    );
     const deleteProductDialogFooter = (
         <>
             <Button label="No" icon="pi pi-times" className="p-button-text" onClick={hideDeleteProductDialog} />
@@ -375,11 +400,11 @@ export const Facture = () => {
                             {[1, 2, 3, 4].map((n) => (
                                 <DataTable value={products} className="p-datatable-striped">
                                     <Column selectionMode="multiple" headerStyle={{ width: "3rem" }}></Column>
-                                    <Column field="code" header="Quantité" sortable body={skeletonTemplate} headerStyle={{ width: "25%", minWidth: "10rem" }} className="bg-cyan-400 border-round-top"></Column>
-                                    <Column field="name" header="IDFacture" sortable body={skeletonTemplate} headerStyle={{ width: "25%", minWidth: "10rem" }} className="bg-indigo-300 border-round-top"></Column>
+                                    <Column field="Quantité" header="Quantité" sortable body={skeletonTemplate} headerStyle={{ width: "25%", minWidth: "10rem" }} className="bg-cyan-400 border-round-top"></Column>
+                                    <Column field="IDFacture" header="IDFacture" sortable body={skeletonTemplate} headerStyle={{ width: "25%", minWidth: "10rem" }} className="bg-indigo-300 border-round-top"></Column>
 
-                                    <Column header="Date" body={skeletonTemplate} headerStyle={{ width: "25%", minWidth: "10rem" }} className="bg-green-300 border-round-top"></Column>
-                                    <Column field="Doit" header="Tel" body={skeletonTemplate} sortable headerStyle={{ width: "25%", minWidth: "8rem" }} className="bg-pink-200 border-round-top"></Column>
+                                    <Column field="Date" header="Date" body={skeletonTemplate} headerStyle={{ width: "25%", minWidth: "10rem" }} className="bg-green-300 border-round-top"></Column>
+                                    <Column field="Tel" header="Tel" body={skeletonTemplate} sortable headerStyle={{ width: "25%", minWidth: "8rem" }} className="bg-pink-200 border-round-top"></Column>
 
                                     <Column body={skeletonTemplate} style={{ width: "20px" }}></Column>
                                 </DataTable>
@@ -404,10 +429,10 @@ export const Facture = () => {
                             responsiveLayout="scroll"
                         >
                             <Column selectionMode="multiple" headerStyle={{ width: "3rem" }}></Column>
-                            <Column field="code" header="Quantité" sortable body={codeBodyTemplate} headerStyle={{ width: "25%", minWidth: "10rem" }} className="bg-cyan-400 border-round-top"></Column>
-                            <Column field="name" header="IDActivie" sortable body={nameBodyTemplate} headerStyle={{ width: "25%", minWidth: "10rem" }} className="bg-indigo-300 border-round-top"></Column>
+                            <Column field="Quantité" header="Quantité" sortable body={codeBodyTemplate} headerStyle={{ width: "25%", minWidth: "10rem" }} className="bg-cyan-400 border-round-top"></Column>
+                            <Column field="IDFacture" header="IDFacture" sortable body={nameBodyTemplate} headerStyle={{ width: "25%", minWidth: "10rem" }} className="bg-indigo-300 border-round-top"></Column>
 
-                            <Column header="Date" body={imageBodyTemplate} headerStyle={{ width: "25%", minWidth: "10rem" }} className="bg-green-300 border-round-top"></Column>
+                            <Column field="Date" header="Date" body={imageBodyTemplate} headerStyle={{ width: "25%", minWidth: "10rem" }} className="bg-green-300 border-round-top"></Column>
                             <Column field="Doit" header="Doit" body={priceBodyTemplate} sortable headerStyle={{ width: "25%", minWidth: "8rem" }} className="bg-pink-200 border-round-top"></Column>
                             <Column body={actionBodyTemplate} style={{ width: "20px" }}></Column>
                         </DataTable>
@@ -440,10 +465,10 @@ export const Facture = () => {
                             {/* {submitted && !product.name && <small className="p-invalid">Name is required.</small>} */}
                         </div>
                     </Dialog>
-                    <Dialog visible={factureDialog} style={{ width: "450px" }} header="Product Details" modal className="p-fluid" footer={productDialogFooter} onHide={hideDialog}>
+                    <Dialog visible={factureDialog} style={{ width: "450px" }} header="Product Details" modal className="p-fluid" footer={productDialogFooter1} onHide={hideDialog}>
                         {FactureByIdQuery.isIdle || FactureByIdQuery.isLoading ? (
                             <>
-                                <skeletonTemplate />
+                                <Skeleton></Skeleton>
                             </>
                         ) : FactureByIdQuery.isSuccess ? (
                             ""
