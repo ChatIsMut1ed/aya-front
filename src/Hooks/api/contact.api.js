@@ -9,7 +9,7 @@ export const useContact = () => {
     const authStore = useAuthStore();
 
     return useQuery(["contact"], () => axios.get(`contact`).then((res) => res.data), {
-        enabled: authStore?.isLoggedIn === true && true,
+        // enabled: authStore?.isLoggedIn === true && true,
         onSuccess: () => {},
         onError: () => {},
         refetchOnWindowFocus: false,
@@ -21,11 +21,28 @@ export const useContactRespond = () => {
 
     return useMutation(
         async (values) => {
-            const res = await axios.post("contact-respond", values);
+            const res = await axios.post("contact", values);
             return res.data;
         },
         {
-            enabled: authStore?.isLoggedIn === true && true,
+            // enabled: authStore?.isLoggedIn === true && true,
+            onSuccess: () => {},
+            onError: () => {},
+        }
+    );
+};
+
+export const useContactDelete = () => {
+    const authStore = useAuthStore();
+
+    return useMutation(
+        async (values) => {
+            console.log(values);
+            const res = await axios.delete(`contact/${values}`);
+            return res.data;
+        },
+        {
+            // enabled: authStore?.isLoggedIn === true && true,
             onSuccess: () => {},
             onError: () => {},
         }

@@ -8,8 +8,8 @@ import { useAuthDispatch, useAuthStore } from "../../stores/auth.store";
 export const useDevisMat = () => {
     const authStore = useAuthStore();
 
-    return useQuery(["DevisMats"], () => axios.get(`DevisMat`).then((res) => res.data), {
-        enabled: authStore?.isLoggedIn === true && true,
+    return useQuery(["DevisMats"], () => axios.get(`devis-mat`).then((res) => res.data), {
+        //enabled: authStore?.isLoggedIn === true && true,
         onSuccess: () => {},
         onError: () => {},
         refetchOnWindowFocus: false,
@@ -21,11 +21,11 @@ export const useDevisMatById = () => {
 
     return useMutation(
         async (values) => {
-            const res = await axios.get(`DevisMat/${values}`);
+            const res = await axios.get(`devis-mat/${values}`);
             return res.data;
         },
         {
-            enabled: authStore?.isLoggedIn === true && true,
+            //enabled: authStore?.isLoggedIn === true && true,
             onSuccess: () => {},
         }
     );
@@ -36,11 +36,11 @@ export const useDeleteDevisMatById = () => {
 
     return useMutation(
         async (values) => {
-            const res = await axios.get(`DevisMat/${values}`);
+            const res = await axios.delete(`devis-mat/${values}`);
             return res.data;
         },
         {
-            enabled: authStore?.isLoggedIn === true && true,
+            //enabled: authStore?.isLoggedIn === true && true,
             onSuccess: () => {},
         }
     );
@@ -51,11 +51,11 @@ export const useCreateDevisMat = () => {
 
     return useMutation(
         async (values) => {
-            const res = await axios.post("DevisMat", values);
+            const res = await axios.post("devis-mat", values);
             return res.data;
         },
         {
-            enabled: authStore?.isLoggedIn === true && true,
+            //enabled: authStore?.isLoggedIn === true && true,
             onSuccess: () => {},
             onError: () => {},
         }
@@ -67,11 +67,11 @@ export const useModifyDevisMat = () => {
 
     return useMutation(
         async (values) => {
-            const res = await axios.put(`DevisMat/${values.id}`, values);
+            const res = await axios.put(`devis-mat/${values.id}`, values);
             return res.data;
         },
         {
-            enabled: authStore?.isLoggedIn === true && true,
+            //enabled: authStore?.isLoggedIn === true && true,
             onSuccess: () => {},
             onError: () => {},
         }

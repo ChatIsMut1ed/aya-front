@@ -17,10 +17,13 @@ import { ProductService } from "../../service/ProductService";
 import { Skeleton } from "primereact/skeleton";
 import { Link, useHistory } from "react-router-dom";
 import { useDevisMat, useDevisMatById, useDeleteDevisMatById, useCreateDevisMat, useModifyDevisMat } from "../../Hooks/api/devisMat.api";
+import { useMatAll } from "../../Hooks/api/matiere.api";
 import { useAuthDispatch } from "../../stores/auth.store.js";
+import { Dropdown } from "primereact/dropdown";
 export const DevisMat = () => {
     // work
     const DevisMatsQuery = useDevisMat();
+    const MatsQuery = useMatAll();
     const DevisMatByIdQuery = useDevisMatById();
     const DevisMatDeleteByIdQuery = useDeleteDevisMatById();
     const DevisMatCreateQuery = useCreateDevisMat();
@@ -29,12 +32,12 @@ export const DevisMat = () => {
     const history = useHistory();
     let emptyProduct = {
         id: null,
-        nom_devis: "",
+        nom: "",
         responsable: "",
         superficie: "",
         qts: "",
-        id_devis_mat: "",
-        date: "",
+        // id_devis_mat: "",
+        // date: "",
     };
 
     const [formErrors, setFormErrors] = useState({});
@@ -47,9 +50,13 @@ export const DevisMat = () => {
     const [selectedProducts, setSelectedProducts] = useState(null);
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
+    const [selectedCity1, setSelectedCity1] = useState(null);
     const toast = useRef(null);
     const dt = useRef(null);
 
+    const onCityChange = (e) => {
+        setSelectedCity1(e.value);
+    };
     useEffect(() => {
         const productService = new ProductService();
         productService.getProducts().then((data) => setProducts(data));
@@ -88,6 +95,8 @@ export const DevisMat = () => {
             // product[key] = key !== "logo" ? value.trim() : value;
             formData.append(key, value);
         }
+        formData.append("mat_id", selectedCity1.code);
+
         if (product.id == null) {
             try {
                 await DevisMatCreateQuery.mutateAsync(formData);
@@ -105,7 +114,7 @@ export const DevisMat = () => {
             }
         } else {
             try {
-                await DevisMatModifyQuery.mutateAsync(formData);
+                await DevisMatModifyQuery.mutateAsync(product);
                 history.push({
                     pathname: "/DevisMat",
                 });
@@ -258,7 +267,7 @@ export const DevisMat = () => {
         return (
             <>
                 <span className="p-column-title">Code</span>
-                {rowData.code}
+                {rowData.nom}
             </>
         );
     };
@@ -267,7 +276,7 @@ export const DevisMat = () => {
         return (
             <>
                 <span className="p-column-title">Name</span>
-                {rowData.name}
+                {rowData.responsable}
             </>
         );
     };
@@ -276,7 +285,8 @@ export const DevisMat = () => {
         return (
             <>
                 <span className="p-column-title">Image</span>
-                <img src={`assets/demo/images/product/${rowData.image}`} alt={rowData.image} className="shadow-2" width="100" />
+                {/* <img src={`assets/demo/images/product/${rowData.image}`} alt={rowData.image} className="shadow-2" width="100" /> */}
+                {rowData.qts}
             </>
         );
     };
@@ -285,7 +295,23 @@ export const DevisMat = () => {
         return (
             <>
                 <span className="p-column-title">Price</span>
-                {formatCurrency(rowData.price)}
+                {rowData.superficie}
+            </>
+        );
+    };
+    const priceBodyTemplate1 = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Price</span>
+                {rowData.mat_id}
+            </>
+        );
+    };
+    const priceBodyTemplate2 = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Price</span>
+                {rowData.created_at}
             </>
         );
     };
@@ -374,7 +400,7 @@ export const DevisMat = () => {
                                     <Column field="price" header="Superficie" body={skeletonTemplate} sortable headerStyle={{ width: "20%", minWidth: "8rem" }} className="bg-pink-200 border-round-top"></Column>
                                     <Column header="Quantités" body={skeletonTemplate} headerStyle={{ width: "20%", minWidth: "10rem" }} className="bg-green-300 border-round-top"></Column>
                                     <Column field="Doit" header="ID_Devis_Mat" body={skeletonTemplate} sortable headerStyle={{ width: "20%", minWidth: "8rem" }} className="bg-pink-200 border-round-top"></Column>
-                                    <Column field="Date" header="Date" body={skeletonTemplate} sortable headerStyle={{ width: "20%", minWidth: "8rem" }} className="bg-indigo-300 border-round-top"></Column>
+                                    {/* <Column field="Date" header="Date" body={skeletonTemplate} sortable headerStyle={{ width: "20%", minWidth: "8rem" }} className="bg-indigo-300 border-round-top"></Column> */}
 
                                     <Column body={skeletonTemplate} style={{ width: "20px" }}></Column>
                                 </DataTable>
@@ -383,7 +409,7 @@ export const DevisMat = () => {
                     ) : DevisMatsQuery.isSuccess ? (
                         <DataTable
                             ref={dt}
-                            value={products}
+                            value={DevisMatsQuery.data}
                             selection={selectedProducts}
                             onSelectionChange={(e) => setSelectedProducts(e.value)}
                             dataKey="id"
@@ -403,8 +429,9 @@ export const DevisMat = () => {
                             <Column field="name" header="Responsable" sortable body={nameBodyTemplate} headerStyle={{ width: "20%", minWidth: "10rem" }} className="bg-indigo-300 border-round-top"></Column>
                             <Column field="price" header="Superficie" body={priceBodyTemplate} sortable headerStyle={{ width: "20%", minWidth: "8rem" }} className="bg-pink-200 border-round-top"></Column>
                             <Column header="Quantités" body={imageBodyTemplate} headerStyle={{ width: "20%", minWidth: "10rem" }} className="bg-green-300 border-round-top"></Column>
-                            <Column field="Doit" header="ID_Devis_Mat" body={priceBodyTemplate} sortable headerStyle={{ width: "20%", minWidth: "8rem" }} className="bg-pink-200 border-round-top"></Column>
-                            <Column field="Date" header="Date" body={priceBodyTemplate} sortable headerStyle={{ width: "20%", minWidth: "8rem" }} className="bg-indigo-300 border-round-top"></Column>
+                            <Column field="Doit" header="ID_Devis_Mat" body={priceBodyTemplate1} sortable headerStyle={{ width: "20%", minWidth: "8rem" }} className="bg-pink-200 border-round-top"></Column>
+
+                            {/* <Column field="Date" header="Date" body={priceBodyTemplate2} sortable headerStyle={{ width: "20%", minWidth: "8rem" }} className="bg-indigo-300 border-round-top"></Column> */}
 
                             <Column body={actionBodyTemplate} style={{ width: "20px" }}></Column>
                         </DataTable>
@@ -416,7 +443,7 @@ export const DevisMat = () => {
                         {/* {product.image && <img src={`assets/demo/images/product/${product.image}`} alt={product.image} width="150" className="mt-0 mx-auto mb-5 block shadow-2" />} */}
                         <div className="field">
                             <label htmlFor="Nom Devis">Nom de Devis</label>
-                            <InputText id="Nom Devis" value={product.nom_devis} onChange={(e) => onInputChange(e, "nom_devis")} required autoFocus className={classNames({ "p-invalid": submitted && !product.nom_devis })} />
+                            <InputText id="Nom Devis" value={product.nom} onChange={(e) => onInputChange(e, "nom")} required autoFocus className={classNames({ "p-invalid": submitted && !product.nom })} />
                             {/* {submitted && !product.name && <small className="p-invalid">Name is required.</small>} */}
                         </div>
                         <div className="field">
@@ -436,14 +463,16 @@ export const DevisMat = () => {
                         </div>
                         <div className="field">
                             <label htmlFor="IDDevisMat">ID_Devis_Mat</label>
-                            <InputText id="IDDevisMat" value={product.id_devis_mat} onChange={(e) => onInputChange(e, "id_devis_mat")} required autoFocus className={classNames({ "p-invalid": submitted && !product.id_devis_mat })} />
+                            {/* <InputText id="IDDevisMat" value={product.id_devis_mat} onChange={(e) => onInputChange(e, "id_devis_mat")} required autoFocus className={classNames({ "p-invalid": submitted && !product.id_devis_mat })} /> */}
+                            <Dropdown value={selectedCity1} options={MatsQuery.isSuccess ? MatsQuery.data : []} onChange={onCityChange} optionLabel="name" placeholder="Matiere" />
+
                             {/* {submitted && !product.name && <small className="p-invalid">Name is required.</small>} */}
                         </div>
-                        <div className="field">
+                        {/* <div className="field">
                             <label htmlFor="Date">Date</label>
                             <InputText id="Date" value={product.date} onChange={(e) => onInputChange(e, "date")} required autoFocus className={classNames({ "p-invalid": submitted && !product.date })} />
-                            {/* {submitted && !product.name && <small className="p-invalid">Name is required.</small>} */}
-                        </div>
+                            {submitted && !product.name && <small className="p-invalid">Name is required.</small>}
+                        </div> */}
                     </Dialog>
                     <Dialog visible={factureDialog} style={{ width: "450px" }} header="Product Details" modal className="p-fluid" footer={productDialogFooter} onHide={hideDialog}>
                         {DevisMatByIdQuery.isIdle || DevisMatByIdQuery.isLoading ? (

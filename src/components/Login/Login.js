@@ -3,14 +3,14 @@ import { Link, useHistory } from "react-router-dom";
 
 import { useLoginUser } from "../../Hooks/api/auth.api";
 import { useAuthDispatch } from "../../stores/auth.store.js";
-
+import { ProgressSpinner } from "primereact/progressspinner";
 export const Login = () => {
     // work
     const authDispatch = useAuthDispatch();
     const history = useHistory();
 
     const [loginForm, setLoginForm] = useState({
-        cin: "",
+        email: "",
         password: "",
     });
 
@@ -23,18 +23,19 @@ export const Login = () => {
         loginForm.password = loginForm.password.trim();
         // console.log(loginForm);
         try {
-            // const result = await loginUserMutation.mutateAsync(loginForm);
-            const result = {
-                data: {
-                    login_status: "successful",
-                    user: {
-                        username: "ala",
-                        age: 28,
-                    },
-                },
-            };
+            const result = await loginUserMutation.mutateAsync(loginForm);
+            // const result = {
+            //     data: {
+            //         login_status: "successful",
+            //         user: {
+            //             username: "ala",
+            //             age: 28,
+            //         },
+            //     },
+            // };
+            console.log(result.data.login_status);
             if (result.data.login_status === "already_logged") {
-                history.push("Contact");
+                history.push("Portfolio");
             }
             if (result.data.login_status === "successful") {
                 authDispatch({
@@ -45,8 +46,8 @@ export const Login = () => {
                     },
                 });
                 history.push({
-                    pathname: "/Contact",
-                    state: { username: result.data.user.username },
+                    pathname: "/Portfolio",
+                    // state: { username: result.data.user.username },
                 });
             }
         } catch (error) {
@@ -70,12 +71,15 @@ export const Login = () => {
                             <form autoComplete="on" onSubmit={handleSubmit}>
                                 <h2 className="reo">Se Connecter</h2>
                                 {loginFormErrors?.message && <p style={{ color: "red" }}>{loginFormErrors?.message}</p>}
-                                <input value={loginForm.cin} onChange={(e) => handleChange(e)} type="text" autoComplete="on" name="cin" className="field" placeholder="Cin" required />
+                                <input value={loginForm.email} onChange={(e) => handleChange(e)} type="text" autoComplete="on" name="email" className="field" placeholder="email" required />
                                 <input value={loginForm.password} onChange={(e) => handleChange(e)} type="password" autoComplete="on" name="password" className="field" placeholder="mot de passe" style={{ borderRadius: "15px", padding: "11px 11px" }} required />
-
-                                <button type="submit" className="btn1">
-                                    Login
-                                </button>
+                                {loginUserMutation.isLoading ? (
+                                    <ProgressSpinner />
+                                ) : (
+                                    <button type="submit" className="btn1">
+                                        Login
+                                    </button>
+                                )}
                             </form>
                         </div>
                     </div>

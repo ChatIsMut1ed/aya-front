@@ -54,6 +54,7 @@ import { Forme2 } from "./components/Forme2/Forme2";
 import { Forme3 } from "./components/Forme3/Forme3";
 import { Forme4 } from "./components/Forme4/Forme4";
 import { Forme5 } from "./components/Forme5/Forme5";
+import { Declaration } from "./components/Declaration/Declaration";
 import { Contact } from "./components/Contact/Contact";
 import { User } from "./components/User/User";
 import { Facture } from "./components/Facture/Facture";
@@ -67,11 +68,18 @@ import { Objet } from "./components/Objet/Objet";
 import { DemandeExpertiseSol } from "./components/DemandeExpertiseSol/DemandeExpertiseSol";
 import { DemandeForageEau } from "./components/DemandeForageEau/DemandeForageEau";
 import { Notification } from "./components/Notification/Notification";
+import { useAuthDispatch, useAuthStore } from "./stores/auth.store";
 
 // Custom Hooks
 import { useAuth } from "./Hooks/api/auth.api.js";
+import axios from "axios";
+
+axios.defaults.baseURL = process.env.REACT_APP_DOMAIN;
+axios.defaults.withCredentials = true;
 
 const App = () => {
+    //custom
+
     const [layoutMode, setLayoutMode] = useState("static");
     const [layoutColorMode, setLayoutColorMode] = useState("light");
     const [inputStyle, setInputStyle] = useState("outlined");
@@ -291,6 +299,7 @@ const App = () => {
                         { label: "Forme3", icon: "pi pi-fw pi-circle-off", to: "/Form3" },
                         { label: "Forme4", icon: "pi pi-fw pi-circle-off", to: "/Form4" },
                         { label: "Forme5", icon: "pi pi-fw pi-circle-off", to: "/Form5" },
+                        { label: "Declaration", icon: "pi pi-fw pi-circle-off", to: "/Declaration" },
                     ],
                 },
                 { label: "Contacts", icon: "pi pi-fw pi-circle-off", to: "/Contact" },
@@ -440,7 +449,6 @@ const App = () => {
     return (
         <div className={wrapperClass} onClick={onWrapperClick}>
             <Tooltip ref={copyTooltipRef} target=".block-action-copy" position="bottom" content="Copied to clipboard" event="focus" />
-
             <AppTopbar onToggleMenuClick={onToggleMenuClick} layoutColorMode={layoutColorMode} mobileTopbarMenuActive={mobileTopbarMenuActive} onMobileTopbarMenuClick={onMobileTopbarMenuClick} onMobileSubTopbarMenuClick={onMobileSubTopbarMenuClick} />
             <div className="layout-sidebar" onClick={onSidebarClick}>
                 {isAuth && (
@@ -455,7 +463,7 @@ const App = () => {
                 <div className="layout-main">
                     <Route path="/" exact component={Login} />
 
-                    {userType == "admin" && (
+                    {userType === "admin" && (
                         <>
                             <Route path="/crud" component={Crud} />
                             <Route path="/empty" component={EmptyPage} />
@@ -476,6 +484,7 @@ const App = () => {
                             <Route path="/DevisMat" component={DevisMat} />
                             <Route path="/Mati" component={Mati} />
                             <Route path="/DevisObjet" component={DevisObjet} />
+                            <Route path="/Declaration" component={Declaration} />
                             <Route path="/Objet" component={Objet} />
                             <Route path="/DemandeExpertiseSol" component={DemandeExpertiseSol} />
                             <Route path="/DemandeForageEau" component={DemandeForageEau} />
@@ -483,7 +492,7 @@ const App = () => {
                         </>
                     )}
 
-                    {userType == "user" && (
+                    {userType === "user" && (
                         <>
                             <Route path="/empty" component={EmptyPage} />
                             <Route path="/Portfolio" component={Portfolio} />

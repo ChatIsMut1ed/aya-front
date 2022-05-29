@@ -8,8 +8,8 @@ import { useAuthDispatch, useAuthStore } from "../../stores/auth.store";
 export const useForage = () => {
     const authStore = useAuthStore();
 
-    return useQuery(["Forages"], () => axios.get(`Forage`).then((res) => res.data), {
-        enabled: authStore?.isLoggedIn === true && true,
+    return useQuery(["Forages"], () => axios.get(`dem-forag`).then((res) => res.data), {
+        //enabled: authStore?.isLoggedIn === true && true,
         onSuccess: () => {},
         onError: () => {},
         refetchOnWindowFocus: false,
@@ -21,11 +21,11 @@ export const useForageById = () => {
 
     return useMutation(
         async (values) => {
-            const res = await axios.get(`Forage/${values}`);
+            const res = await axios.get(`dem-forag/${values}`);
             return res.data;
         },
         {
-            enabled: authStore?.isLoggedIn === true && true,
+            //enabled: authStore?.isLoggedIn === true && true,
             onSuccess: () => {},
         }
     );
@@ -36,11 +36,11 @@ export const useDeleteForageById = () => {
 
     return useMutation(
         async (values) => {
-            const res = await axios.get(`Forage/${values}`);
+            const res = await axios.delete(`dem-forag/${values}`);
             return res.data;
         },
         {
-            enabled: authStore?.isLoggedIn === true && true,
+            //enabled: authStore?.isLoggedIn === true && true,
             onSuccess: () => {},
         }
     );
@@ -51,11 +51,11 @@ export const useCreateForage = () => {
 
     return useMutation(
         async (values) => {
-            const res = await axios.post("Forage", values);
+            const res = await axios.post("dem-forag", values);
             return res.data;
         },
         {
-            enabled: authStore?.isLoggedIn === true && true,
+            //enabled: authStore?.isLoggedIn === true && true,
             onSuccess: () => {},
             onError: () => {},
         }
@@ -67,11 +67,11 @@ export const useModifyForage = () => {
 
     return useMutation(
         async (values) => {
-            const res = await axios.put(`Forage/${values.id}`, values);
+            const res = await axios.put(`dem-forag/${values.id}`, values);
             return res.data;
         },
         {
-            enabled: authStore?.isLoggedIn === true && true,
+            //enabled: authStore?.isLoggedIn === true && true,
             onSuccess: () => {},
             onError: () => {},
         }

@@ -8,8 +8,8 @@ import { useAuthDispatch, useAuthStore } from "../../stores/auth.store";
 export const useSol = () => {
     const authStore = useAuthStore();
 
-    return useQuery(["Sols"], () => axios.get(`Sol`).then((res) => res.data), {
-        enabled: authStore?.isLoggedIn === true && true,
+    return useQuery(["Sols"], () => axios.get(`dem-exp`).then((res) => res.data), {
+        //enabled: authStore?.isLoggedIn === true && true,
         onSuccess: () => {},
         onError: () => {},
         refetchOnWindowFocus: false,
@@ -21,11 +21,11 @@ export const useSolById = () => {
 
     return useMutation(
         async (values) => {
-            const res = await axios.get(`Sol/${values}`);
+            const res = await axios.get(`dem-exp/${values}`);
             return res.data;
         },
         {
-            enabled: authStore?.isLoggedIn === true && true,
+            //enabled: authStore?.isLoggedIn === true && true,
             onSuccess: () => {},
         }
     );
@@ -36,11 +36,11 @@ export const useDeleteSolById = () => {
 
     return useMutation(
         async (values) => {
-            const res = await axios.get(`Sol/${values}`);
+            const res = await axios.delete(`dem-exp/${values}`);
             return res.data;
         },
         {
-            enabled: authStore?.isLoggedIn === true && true,
+            //enabled: authStore?.isLoggedIn === true && true,
             onSuccess: () => {},
         }
     );
@@ -51,11 +51,11 @@ export const useCreateSol = () => {
 
     return useMutation(
         async (values) => {
-            const res = await axios.post("Sol", values);
+            const res = await axios.post("dem-exp", values);
             return res.data;
         },
         {
-            enabled: authStore?.isLoggedIn === true && true,
+            //enabled: authStore?.isLoggedIn === true && true,
             onSuccess: () => {},
             onError: () => {},
         }
@@ -67,11 +67,11 @@ export const useModifySol = () => {
 
     return useMutation(
         async (values) => {
-            const res = await axios.put(`Sol/${values.id}`, values);
+            const res = await axios.put(`dem-exp/${values.id}`, values);
             return res.data;
         },
         {
-            enabled: authStore?.isLoggedIn === true && true,
+            //enabled: authStore?.isLoggedIn === true && true,
             onSuccess: () => {},
             onError: () => {},
         }

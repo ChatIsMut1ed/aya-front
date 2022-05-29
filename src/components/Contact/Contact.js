@@ -15,23 +15,19 @@ import { InputText } from "primereact/inputtext";
 import { ProductService } from "../../service/ProductService";
 import { Skeleton } from "primereact/skeleton";
 import { Link, useHistory } from "react-router-dom";
-import { useContact } from "../../Hooks/api/contact.api";
+import { useContact, useContactRespond, useContactDelete } from "../../Hooks/api/contact.api";
 import { useAuthDispatch } from "../../stores/auth.store.js";
 
 export const Contact = () => {
     let emptyProduct = {
         id: null,
-        name: "",
-        image: null,
-        description: "",
-        category: null,
-        price: 0,
-        quantity: 0,
-        rating: 0,
-        inventoryStatus: "INSTOCK",
+        email: "",
+        message: "",
     };
     // work
     const contactQuery = useContact();
+    const contactRespondQuery = useContactRespond();
+    const contactDeleteQuery = useContactDelete();
     const authDispatch = useAuthDispatch();
     const history = useHistory();
 
@@ -46,6 +42,7 @@ export const Contact = () => {
     const [globalFilter, setGlobalFilter] = useState(null);
     const toast = useRef(null);
     const dt = useRef(null);
+    const [formErrors, setFormErrors] = useState({});
 
     useEffect(() => {
         const productService = new ProductService();
@@ -75,27 +72,29 @@ export const Contact = () => {
         setDeleteProductsDialog(false);
     };
 
-    const saveProduct = () => {
+    const saveProduct = async (e) => {
+        e.preventDefault();
         setSubmitted(true);
+        setFormErrors({});
+        const formData = new FormData();
 
-        if (product.name.trim()) {
-            let _products = [...products];
-            let _product = { ...product };
-            if (product.id) {
-                const index = findIndexById(product.id);
-
-                _products[index] = _product;
-                toast.current.show({ severity: "success", summary: "Successful", detail: "Product Updated", life: 3000 });
-            } else {
-                _product.id = createId();
-                _product.image = "product-placeholder.svg";
-                _products.push(_product);
-                toast.current.show({ severity: "success", summary: "Successful", detail: "Product Created", life: 3000 });
-            }
-
-            setProducts(_products);
+        for (let [key, value] of Object.entries(product)) {
+            // product[key] = key !== "logo" ? value.trim() : value;
+            formData.append(key, value);
+        }
+        try {
+            await contactRespondQuery.mutateAsync(formData);
+            history.push({
+                pathname: "/Contact",
+            });
+            setProducts(products);
             setProductDialog(false);
             setProduct(emptyProduct);
+            toast.current.show({ severity: "success", summary: "Successful", detail: "Product Created", life: 3000 });
+        } catch (error) {
+            const errorsObject = error?.response?.data?.errors;
+            setFormErrors(errorsObject);
+            toast.current.show({ severity: "error", summary: "Error Create", detail: `${errorsObject}`, life: 3000 });
         }
     };
 
@@ -113,12 +112,27 @@ export const Contact = () => {
         setDeleteProductDialog(true);
     };
 
-    const deleteProduct = () => {
-        let _products = products.filter((val) => val.id !== product.id);
-        setProducts(_products);
-        setDeleteProductDialog(false);
-        setProduct(emptyProduct);
-        toast.current.show({ severity: "success", summary: "Successful", detail: "Product Deleted", life: 3000 });
+    const deleteProduct = async (e) => {
+        // let _products = products.filter((val) => val.id !== product.id);
+        // setProducts(_products);
+        // setDeleteProductDialog(false);
+        // setProduct(emptyProduct);
+        // toast.current.show({ severity: "success", summary: "Successful", detail: "Product Deleted", life: 3000 });
+
+        try {
+            await contactDeleteQuery.mutateAsync(product.client_id);
+            history.push({
+                pathname: "/Contact",
+            });
+            setProducts(products);
+            setDeleteProductDialog(false);
+            setProduct(emptyProduct);
+            toast.current.show({ severity: "success", summary: "Successful", detail: "Product Created", life: 3000 });
+        } catch (error) {
+            const errorsObject = error?.response?.data?.errors;
+            setFormErrors(errorsObject);
+            toast.current.show({ severity: "error", summary: "Error Delete", detail: `${errorsObject}`, life: 3000 });
+        }
     };
 
     const findIndexById = (id) => {
@@ -203,7 +217,7 @@ export const Contact = () => {
         return (
             <>
                 <span className="p-column-title">Code</span>
-                {rowData.code}
+                {rowData.client_id}
             </>
         );
     };
@@ -230,7 +244,7 @@ export const Contact = () => {
         return (
             <>
                 <span className="p-column-title">Price</span>
-                {formatCurrency(rowData.price)}
+                {rowData.message}
             </>
         );
     };
@@ -325,7 +339,7 @@ export const Contact = () => {
                     ) : contactQuery.isSuccess ? (
                         <DataTable
                             ref={dt}
-                            value={products}
+                            value={contactQuery.data}
                             selection={selectedProducts}
                             onSelectionChange={(e) => setSelectedProducts(e.value)}
                             dataKey="id"
@@ -351,20 +365,20 @@ export const Contact = () => {
                     )}
 
                     <Dialog visible={productDialog} style={{ width: "450px" }} header="Product Details" modal className="p-fluid" footer={productDialogFooter} onHide={hideDialog}>
-                        <img src="./logo.jpg" alt={product.image} width="150" className="mt-0 mx-auto mb-5 block shadow-2" />
+                        {/* <img src="./logo.jpg" alt={product.image} width="150" className="mt-0 mx-auto mb-5 block shadow-2" /> */}
                         <div className="field">
-                            <label htmlFor="IDUtilisateur">IDUtilisateur</label>
-                            <InputText id="IDUtilisateur" value={product.name} onChange={(e) => onInputChange(e, "name")} required autoFocus className={classNames({ "p-invalid": submitted && !product.name })} />
-                            {submitted && !product.name && <small className="p-invalid">Name is required.</small>}
+                            <label htmlFor="Eamil">Eamil</label>
+                            <InputText id="Eamil" value={product.email} onChange={(e) => onInputChange(e, "email")} required autoFocus className={classNames({ "p-invalid": submitted && !product.email })} />
+                            {submitted && !product.email && <small className="p-invalid">email is required.</small>}
                         </div>
 
                         <div className="field">
                             <label htmlFor="Message">Message</label>
-                            <InputTextarea id="Message" value={product.description} onChange={(e) => onInputChange(e, "description")} required rows={3} cols={20} />
+                            <InputTextarea id="Message" value={product.message} onChange={(e) => onInputChange(e, "message")} required rows={3} cols={20} />
                         </div>
                     </Dialog>
                     <Dialog visible={factureDialog} style={{ width: "450px" }} header="Product Details" modal className="p-fluid" footer={productDialogFooter} onHide={hideDialog}>
-                        <aside className="profile-card" />
+                        {/* <aside className="profile-card" />
                         <section className="product">
                             <div className="product__photo">
                                 <div className="photo-container">
@@ -435,7 +449,7 @@ export const Contact = () => {
                             <p>
                                 Design from <a href="https://dribbble.com/shots/5216438-Daily-UI-012">dribbble shot</a> of <a href="https://dribbble.com/rodrigorramos">Rodrigo Ramos</a>
                             </p>
-                        </footer>
+                        </footer> */}
                     </Dialog>
 
                     <Dialog visible={deleteProductDialog} style={{ width: "450px" }} header="Confirm" modal footer={deleteProductDialogFooter} onHide={hideDeleteProductDialog}>

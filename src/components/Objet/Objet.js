@@ -104,7 +104,7 @@ export const Objet = () => {
             }
         } else {
             try {
-                await ObjModifyQuery.mutateAsync(formData);
+                await ObjModifyQuery.mutateAsync(product);
                 history.push({
                     pathname: "/Objet",
                 });
@@ -258,7 +258,7 @@ export const Objet = () => {
         return (
             <>
                 <span className="p-column-title">Code</span>
-                {rowData.code}
+                {rowData.designation}
             </>
         );
     };
@@ -267,7 +267,7 @@ export const Objet = () => {
         return (
             <>
                 <span className="p-column-title">Name</span>
-                {rowData.name}
+                {rowData.unite}
             </>
         );
     };
@@ -276,7 +276,8 @@ export const Objet = () => {
         return (
             <>
                 <span className="p-column-title">Image</span>
-                <img src={`assets/demo/images/product/${rowData.image}`} alt={rowData.image} className="shadow-2" width="100" />
+                {/* <img src={`assets/demo/images/product/${rowData.image}`} alt={rowData.image} className="shadow-2" width="100" /> */}
+                {rowData.superficie}
             </>
         );
     };
@@ -285,11 +286,18 @@ export const Objet = () => {
         return (
             <>
                 <span className="p-column-title">Price</span>
-                {formatCurrency(rowData.price)}
+                {rowData.prix_unitaire}
             </>
         );
     };
-
+    const priceBodyTemplate1 = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Price</span>
+                {rowData.qts_par_h}
+            </>
+        );
+    };
     const categoryBodyTemplate = (rowData) => {
         return (
             <>
@@ -381,7 +389,7 @@ export const Objet = () => {
                     ) : ObjsQuery.isSuccess ? (
                         <DataTable
                             ref={dt}
-                            value={products}
+                            value={ObjsQuery.data}
                             selection={selectedProducts}
                             onSelectionChange={(e) => setSelectedProducts(e.value)}
                             dataKey="id"
@@ -401,7 +409,7 @@ export const Objet = () => {
                             <Column field="name" header="Unité" sortable body={nameBodyTemplate} headerStyle={{ width: "20%", minWidth: "10rem" }} className="bg-indigo-300 border-round-top"></Column>
                             <Column field="price" header="Prix_Unitaire" body={priceBodyTemplate} sortable headerStyle={{ width: "20%", minWidth: "8rem" }} className="bg-pink-200 border-round-top"></Column>
                             <Column header="Superficie" body={imageBodyTemplate} headerStyle={{ width: "20%", minWidth: "10rem" }} className="bg-green-300 border-round-top"></Column>
-                            <Column field="QTS/H" header="QTS/H" body={priceBodyTemplate} sortable headerStyle={{ width: "20%", minWidth: "8rem" }} className="bg-pink-200 border-round-top"></Column>
+                            <Column field="QTS/H" header="QTS/H" body={priceBodyTemplate1} sortable headerStyle={{ width: "20%", minWidth: "8rem" }} className="bg-pink-200 border-round-top"></Column>
 
                             <Column body={actionBodyTemplate} style={{ width: "20px" }}></Column>
                         </DataTable>
@@ -418,12 +426,12 @@ export const Objet = () => {
                         </div>
                         <div className="field">
                             <label htmlFor="Unité">Unité</label>
-                            <InputText id="Unité" value={product.unit} onChange={(e) => onInputChange(e, "unit")} required autoFocus className={classNames({ "p-invalid": submitted && !product.unit })} />
+                            <InputText id="Unité" value={product.unite} onChange={(e) => onInputChange(e, "unite")} required autoFocus className={classNames({ "p-invalid": submitted && !product.unite })} />
                             {/* {submitted && !product.name && <small className="p-invalid">Name is required.</small>} */}
                         </div>
                         <div className="field">
                             <label htmlFor="PrixUnitaire">Prix_Unitaire</label>
-                            <InputText id="PrixUnitaire" value={product.prix_unit} onChange={(e) => onInputChange(e, "prix_unit")} required autoFocus className={classNames({ "p-invalid": submitted && !product.prix_unit })} />
+                            <InputText id="PrixUnitaire" value={product.prix_unitaire} onChange={(e) => onInputChange(e, "prix_unitaire")} required autoFocus className={classNames({ "p-invalid": submitted && !product.prix_unitaire })} />
                             {/* {submitted && !product.name && <small className="p-invalid">Name is required.</small>} */}
                         </div>
                         <div className="field">
@@ -433,7 +441,7 @@ export const Objet = () => {
                         </div>
                         <div className="field">
                             <label htmlFor="QTSH">QTS/H</label>
-                            <InputText id="QTSH" value={product.qts} onChange={(e) => onInputChange(e, "qts")} required autoFocus className={classNames({ "p-invalid": submitted && !product.qts })} />
+                            <InputText id="QTSH" value={product.qts_par_h} onChange={(e) => onInputChange(e, "qts_par_h")} required autoFocus className={classNames({ "p-invalid": submitted && !product.qts_par_h })} />
                             {/* {submitted && !product.name && <small className="p-invalid">Name is required.</small>} */}
                         </div>
                     </Dialog>

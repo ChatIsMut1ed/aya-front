@@ -29,14 +29,9 @@ export const Mati = () => {
     const history = useHistory();
     let emptyProduct = {
         id: null,
-        name: "",
-        image: null,
-        description: "",
-        category: null,
-        price: 0,
-        quantity: 0,
-        rating: 0,
-        inventoryStatus: "INSTOCK",
+        designation: "",
+        unite: "",
+        prix_unitaire: "",
     };
     const [formErrors, setFormErrors] = useState({});
     const [products, setProducts] = useState(null);
@@ -106,7 +101,7 @@ export const Mati = () => {
             }
         } else {
             try {
-                await MatModifyQuery.mutateAsync(formData);
+                await MatModifyQuery.mutateAsync(product);
                 history.push({
                     pathname: "/Mati",
                 });
@@ -260,7 +255,7 @@ export const Mati = () => {
         return (
             <>
                 <span className="p-column-title">Code</span>
-                {rowData.code}
+                {rowData.designation}
             </>
         );
     };
@@ -269,7 +264,7 @@ export const Mati = () => {
         return (
             <>
                 <span className="p-column-title">Name</span>
-                {rowData.name}
+                {rowData.unite}
             </>
         );
     };
@@ -287,7 +282,7 @@ export const Mati = () => {
         return (
             <>
                 <span className="p-column-title">Price</span>
-                {formatCurrency(rowData.price)}
+                {rowData.prix_unitaire}
             </>
         );
     };
@@ -384,7 +379,7 @@ export const Mati = () => {
                     ) : MatsQuery.isSuccess ? (
                         <DataTable
                             ref={dt}
-                            value={products}
+                            value={MatsQuery.data}
                             selection={selectedProducts}
                             onSelectionChange={(e) => setSelectedProducts(e.value)}
                             dataKey="id"
@@ -419,12 +414,12 @@ export const Mati = () => {
                         </div>
                         <div className="field">
                             <label htmlFor="Unité">Unité</label>
-                            <InputText id="Unité" value={product.unit} onChange={(e) => onInputChange(e, "unit")} required autoFocus className={classNames({ "p-invalid": submitted && !product.unit })} />
+                            <InputText id="Unité" value={product.unite} onChange={(e) => onInputChange(e, "unite")} required autoFocus className={classNames({ "p-invalid": submitted && !product.unite })} />
                             {/* {submitted && !product.name && <small className="p-invalid">Unité is required.</small>} */}
                         </div>
                         <div className="field">
                             <label htmlFor="Prix Unitaire">Prix Unitaire</label>
-                            <InputText id="Prix Unitaire" value={product.prix_unit} onChange={(e) => onInputChange(e, "prix_unit")} required autoFocus className={classNames({ "p-invalid": submitted && !product.prix_unit })} />
+                            <InputText id="Prix Unitaire" value={product.prix_unitaire} onChange={(e) => onInputChange(e, "prix_unitaire")} required autoFocus className={classNames({ "p-invalid": submitted && !product.prix_unitaire })} />
                             {/* {submitted && !product.name && <small className="p-invalid">Prix Unitaire is required.</small>} */}
                         </div>
                     </Dialog>

@@ -29,17 +29,18 @@ export const DemandeExpertiseSol = () => {
     const history = useHistory();
     let emptyProduct = {
         id: null,
-        Postulat: "",
-        CIN: "",
-        Date: "",
-        Adresse: "",
-        NumFraisIM: "",
-        Localisation: "",
-        Endroit: "",
-        Décanat: "",
-        Délégation: "",
-        Superficie: "",
-        UtilisationActuellesol: "",
+        nom_postulant: "",
+        cin: "",
+        date: "",
+        adresse: "",
+        tel: "",
+        num_frais_im: "",
+        local: "",
+        endroit: "",
+        decanat: "",
+        delegation: "",
+        superficie: "",
+        ut_act_sol: "",
     };
 
     const [formErrors, setFormErrors] = useState({});
@@ -110,7 +111,7 @@ export const DemandeExpertiseSol = () => {
             }
         } else {
             try {
-                await SolModifyQuery.mutateAsync(formData);
+                await SolModifyQuery.mutateAsync(product);
                 history.push({
                     pathname: "/DemandeExpertiseSol",
                 });
@@ -169,7 +170,7 @@ export const DemandeExpertiseSol = () => {
         try {
             await SolDeleteByIdQuery.mutateAsync(product.id);
             history.push({
-                pathname: "/DevisObj",
+                pathname: "/DemandeExpertiseSol",
             });
             setProducts(products);
             setDeleteProductDialog(false);
@@ -264,7 +265,16 @@ export const DemandeExpertiseSol = () => {
         return (
             <>
                 <span className="p-column-title">Code</span>
-                {rowData.code}
+                {rowData.nom_postulant}
+            </>
+        );
+    };
+
+    const codeBodyTemplate1 = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Code</span>
+                {rowData.local}
             </>
         );
     };
@@ -273,7 +283,15 @@ export const DemandeExpertiseSol = () => {
         return (
             <>
                 <span className="p-column-title">Name</span>
-                {rowData.name}
+                {rowData.cin}
+            </>
+        );
+    };
+    const nameBodyTemplate1 = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Name</span>
+                {rowData.endroit}
             </>
         );
     };
@@ -282,7 +300,18 @@ export const DemandeExpertiseSol = () => {
         return (
             <>
                 <span className="p-column-title">Image</span>
-                <img src={`assets/demo/images/product/${rowData.image}`} alt={rowData.image} className="shadow-2" width="100" />
+                {/* <img src={`assets/demo/images/product/${rowData.image}`} alt={rowData.image} className="shadow-2" width="100" /> */}
+                {rowData.adresse}
+            </>
+        );
+    };
+
+    const imageBodyTemplate1 = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Image</span>
+                {/* <img src={`assets/demo/images/product/${rowData.image}`} alt={rowData.image} className="shadow-2" width="100" /> */}
+                {rowData.delegation}
             </>
         );
     };
@@ -291,11 +320,34 @@ export const DemandeExpertiseSol = () => {
         return (
             <>
                 <span className="p-column-title">Price</span>
-                {formatCurrency(rowData.price)}
+                {rowData.num_frais_im}
             </>
         );
     };
-
+    const priceBodyTemplate1 = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Price</span>
+                {rowData.decanat}
+            </>
+        );
+    };
+    const priceBodyTemplate2 = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Price</span>
+                {rowData.superficie}
+            </>
+        );
+    };
+    const priceBodyTemplate3 = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Price</span>
+                {rowData.ut_act_sol}
+            </>
+        );
+    };
     const categoryBodyTemplate = (rowData) => {
         return (
             <>
@@ -394,7 +446,7 @@ export const DemandeExpertiseSol = () => {
                     ) : SolsQuery.isSuccess ? (
                         <DataTable
                             ref={dt}
-                            value={products}
+                            value={SolsQuery.data}
                             selection={selectedProducts}
                             onSelectionChange={(e) => setSelectedProducts(e.value)}
                             dataKey="id"
@@ -412,15 +464,15 @@ export const DemandeExpertiseSol = () => {
                             <Column selectionMode="multiple" headerStyle={{ width: "3rem" }}></Column>
                             <Column field="code" header="Nom de Postulat" sortable body={codeBodyTemplate} headerStyle={{ width: "8%", minWidth: "10rem" }} className="bg-cyan-400 border-round-top"></Column>
                             <Column field="name" header="CIN" sortable body={nameBodyTemplate} headerStyle={{ width: "8%", minWidth: "10rem" }} className="bg-indigo-300 border-round-top"></Column>
-                            <Column field="price" header="Date" body={priceBodyTemplate} sortable headerStyle={{ width: "8%", minWidth: "8rem" }} className="bg-pink-200 border-round-top"></Column>
+                            {/* <Column field="price" header="Date" body={priceBodyTemplate} sortable headerStyle={{ width: "8%", minWidth: "8rem" }} className="bg-pink-200 border-round-top"></Column> */}
                             <Column header="Adresse" body={imageBodyTemplate} headerStyle={{ width: "8%", minWidth: "10rem" }} className="bg-green-300 border-round-top"></Column>
                             <Column field="Doit" header="Num_Frais_IM" body={priceBodyTemplate} sortable headerStyle={{ width: "8%", minWidth: "8rem" }} className="bg-pink-200 border-round-top"></Column>
-                            <Column field="code" header="Localisation" sortable body={codeBodyTemplate} headerStyle={{ width: "8%", minWidth: "10rem" }} className="bg-cyan-400 border-round-top"></Column>
-                            <Column field="name" header="Endroit" sortable body={nameBodyTemplate} headerStyle={{ width: "8%", minWidth: "10rem" }} className="bg-indigo-300 border-round-top"></Column>
-                            <Column field="price" header="Décanat" body={priceBodyTemplate} sortable headerStyle={{ width: "8%", minWidth: "8rem" }} className="bg-pink-200 border-round-top"></Column>
-                            <Column header="Délégation" body={imageBodyTemplate} headerStyle={{ width: "8%", minWidth: "10rem" }} className="bg-green-300 border-round-top"></Column>
-                            <Column field="Doit" header="Superficie" body={priceBodyTemplate} sortable headerStyle={{ width: "8%", minWidth: "8rem" }} className="bg-pink-200 border-round-top"></Column>
-                            <Column field="code" header="Utilisation_Actuelle_sol" sortable body={codeBodyTemplate} headerStyle={{ width: "8%", minWidth: "8rem" }} className="bg-cyan-400 border-round-top"></Column>
+                            <Column field="code" header="Localisation" sortable body={codeBodyTemplate1} headerStyle={{ width: "8%", minWidth: "10rem" }} className="bg-cyan-400 border-round-top"></Column>
+                            <Column field="name" header="Endroit" sortable body={nameBodyTemplate1} headerStyle={{ width: "8%", minWidth: "10rem" }} className="bg-indigo-300 border-round-top"></Column>
+                            <Column field="price" header="Décanat" body={priceBodyTemplate1} sortable headerStyle={{ width: "8%", minWidth: "8rem" }} className="bg-pink-200 border-round-top"></Column>
+                            <Column header="Délégation" body={imageBodyTemplate1} headerStyle={{ width: "8%", minWidth: "10rem" }} className="bg-green-300 border-round-top"></Column>
+                            <Column field="Doit" header="Superficie" body={priceBodyTemplate2} sortable headerStyle={{ width: "8%", minWidth: "8rem" }} className="bg-pink-200 border-round-top"></Column>
+                            <Column field="code" header="Utilisation_Actuelle_sol" sortable body={priceBodyTemplate3} headerStyle={{ width: "8%", minWidth: "8rem" }} className="bg-cyan-400 border-round-top"></Column>
 
                             <Column body={actionBodyTemplate} style={{ width: "20px" }}></Column>
                         </DataTable>
@@ -432,57 +484,62 @@ export const DemandeExpertiseSol = () => {
                         {/* {product.image && <img src={`assets/demo/images/product/${product.image}`} alt={product.image} width="150" className="mt-0 mx-auto mb-5 block shadow-2" />} */}
                         <div className="field">
                             <label htmlFor="Nom Postulat">Nom de Postulat</label>
-                            <InputText id="Nom Postulat" value={product.Postulat} onChange={(e) => onInputChange(e, "Postulat")} required autoFocus className={classNames({ "p-invalid": submitted && !product.Postulat })} />
+                            <InputText id="Nom Postulat" value={product.nom_postulant} onChange={(e) => onInputChange(e, "nom_postulant")} required autoFocus className={classNames({ "p-invalid": submitted && !product.nom_postulant })} />
                             {/* {submitted && !product.name && <small className="p-invalid">Name is required.</small>} */}
                         </div>
                         <div className="field">
                             <label htmlFor="CIN">CIN</label>
-                            <InputText id="CIN" value={product.CIN} onChange={(e) => onInputChange(e, "CIN")} required autoFocus className={classNames({ "p-invalid": submitted && !product.CIN })} />
+                            <InputText id="CIN" value={product.cin} onChange={(e) => onInputChange(e, "cin")} required autoFocus className={classNames({ "p-invalid": submitted && !product.cin })} />
                             {/* {submitted && !product.name && <small className="p-invalid">Name is required.</small>} */}
                         </div>
-                        <div className="field">
+                        {/* <div className="field">
                             <label htmlFor="Date">Date</label>
-                            <InputText id="Date" value={product.Date} onChange={(e) => onInputChange(e, "Date")} required autoFocus className={classNames({ "p-invalid": submitted && !product.Date })} />
-                            {/* {submitted && !product.name && <small className="p-invalid">Name is required.</small>} */}
-                        </div>
+                            <InputText id="Date" value={product.date} onChange={(e) => onInputChange(e, "date")} required autoFocus className={classNames({ "p-invalid": submitted && !product.date })} />
+                            {submitted && !product.name && <small className="p-invalid">Name is required.</small>}
+                        </div> */}
                         <div className="field">
                             <label htmlFor="Adresse">Adresse</label>
-                            <InputText id="Adresse" value={product.Adresse} onChange={(e) => onInputChange(e, "Adresse")} required autoFocus className={classNames({ "p-invalid": submitted && !product.Adresse })} />
+                            <InputText id="Adresse" value={product.adresse} onChange={(e) => onInputChange(e, "adresse")} required autoFocus className={classNames({ "p-invalid": submitted && !product.adresse })} />
+                            {/* {submitted && !product.name && <small className="p-invalid">Name is required.</small>} */}
+                        </div>
+                        <div className="field">
+                            <label htmlFor="TEL">Tel</label>
+                            <InputText id="tel" value={product.tel} onChange={(e) => onInputChange(e, "tel")} required autoFocus className={classNames({ "p-invalid": submitted && !product.tel })} />
                             {/* {submitted && !product.name && <small className="p-invalid">Name is required.</small>} */}
                         </div>
                         <div className="field">
                             <label htmlFor="NumFraisIM">Num_Frais_IM</label>
-                            <InputText id="NumFraisIM" value={product.NumFraisIM} onChange={(e) => onInputChange(e, "NumFraisIM")} required autoFocus className={classNames({ "p-invalid": submitted && !product.NumFraisIM })} />
+                            <InputText id="NumFraisIM" value={product.num_frais_im} onChange={(e) => onInputChange(e, "num_frais_im")} required autoFocus className={classNames({ "p-invalid": submitted && !product.num_frais_im })} />
                             {/* {submitted && !product.name && <small className="p-invalid">Name is required.</small>} */}
                         </div>
                         <div className="field">
                             <label htmlFor="Localisation">Localisation</label>
-                            <InputText id="Localisation" value={product.Localisation} onChange={(e) => onInputChange(e, "Localisation")} required autoFocus className={classNames({ "p-invalid": submitted && !product.Localisation })} />
+                            <InputText id="Localisation" value={product.local} onChange={(e) => onInputChange(e, "local")} required autoFocus className={classNames({ "p-invalid": submitted && !product.local })} />
                             {/* {submitted && !product.name && <small className="p-invalid">Name is required.</small>} */}
                         </div>
                         <div className="field">
                             <label htmlFor="Endroit">Endroit</label>
-                            <InputText id="Endroit" value={product.Endroit} onChange={(e) => onInputChange(e, "Endroit")} required autoFocus className={classNames({ "p-invalid": submitted && !product.Endroit })} />
+                            <InputText id="Endroit" value={product.endroit} onChange={(e) => onInputChange(e, "endroit")} required autoFocus className={classNames({ "p-invalid": submitted && !product.endroit })} />
                             {/* {submitted && !product.name && <small className="p-invalid">Name is required.</small>} */}
                         </div>
                         <div className="field">
                             <label htmlFor="Décanat">Décanat</label>
-                            <InputText id="Décanat" value={product.Décanat} onChange={(e) => onInputChange(e, "Décanat")} required autoFocus className={classNames({ "p-invalid": submitted && !product.Décanat })} />
+                            <InputText id="Décanat" value={product.decanat} onChange={(e) => onInputChange(e, "decanat")} required autoFocus className={classNames({ "p-invalid": submitted && !product.decanat })} />
                             {/* {submitted && !product.name && <small className="p-invalid">Name is required.</small>} */}
                         </div>
                         <div className="field">
                             <label htmlFor="Délégation">Délégation</label>
-                            <InputText id="Délégation" value={product.Délégation} onChange={(e) => onInputChange(e, "Délégation")} required autoFocus className={classNames({ "p-invalid": submitted && !product.Délégation })} />
+                            <InputText id="Délégation" value={product.delegation} onChange={(e) => onInputChange(e, "delegation")} required autoFocus className={classNames({ "p-invalid": submitted && !product.delegation })} />
                             {/* {submitted && !product.name && <small className="p-invalid">Name is required.</small>} */}
                         </div>
                         <div className="field">
                             <label htmlFor="Superficie">Superficie</label>
-                            <InputText id="Superficie" value={product.Superficie} onChange={(e) => onInputChange(e, "Superficie")} required autoFocus className={classNames({ "p-invalid": submitted && !product.Superficie })} />
+                            <InputText id="Superficie" value={product.superficie} onChange={(e) => onInputChange(e, "superficie")} required autoFocus className={classNames({ "p-invalid": submitted && !product.superficie })} />
                             {/* {submitted && !product.name && <small className="p-invalid">Name is required.</small>} */}
                         </div>
                         <div className="field">
                             <label htmlFor="UtilisationActuellesol">Utilisation_Actuelle_sol</label>
-                            <InputText id="UtilisationActuellesol" value={product.UtilisationActuellesol} onChange={(e) => onInputChange(e, "UtilisationActuellesol")} required autoFocus className={classNames({ "p-invalid": submitted && !product.UtilisationActuellesol })} />
+                            <InputText id="UtilisationActuellesol" value={product.ut_act_sol} onChange={(e) => onInputChange(e, "ut_act_sol")} required autoFocus className={classNames({ "p-invalid": submitted && !product.ut_act_sol })} />
                             {/* {submitted && !product.name && <small className="p-invalid">Name is required.</small>} */}
                         </div>
                     </Dialog>

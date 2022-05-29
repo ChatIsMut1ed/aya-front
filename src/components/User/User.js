@@ -263,7 +263,7 @@ export const User = () => {
         return (
             <>
                 <span className="p-column-title">Code</span>
-                {rowData.code}
+                {rowData.fullname}
             </>
         );
     };
@@ -272,7 +272,15 @@ export const User = () => {
         return (
             <>
                 <span className="p-column-title">Name</span>
-                {rowData.name}
+                {rowData.gender}
+            </>
+        );
+    };
+    const nameBodyTemplate1 = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Name</span>
+                {rowData.tn_abroad}
             </>
         );
     };
@@ -281,7 +289,7 @@ export const User = () => {
         return (
             <>
                 <span className="p-column-title">Image</span>
-                <img src={`assets/demo/images/product/${rowData.image}`} alt={rowData.image} className="shadow-2" width="100" />
+                {rowData.email}
             </>
         );
     };
@@ -290,11 +298,18 @@ export const User = () => {
         return (
             <>
                 <span className="p-column-title">Price</span>
-                {formatCurrency(rowData.price)}
+                {rowData.cin}
             </>
         );
     };
-
+    const priceBodyTemplate1 = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Price</span>
+                {rowData.tel}
+            </>
+        );
+    };
     const categoryBodyTemplate = (rowData) => {
         return (
             <>
@@ -308,7 +323,7 @@ export const User = () => {
         return (
             <>
                 <span className="p-column-title">Reviews</span>
-                <Rating value={rowData.rating} readonly cancel={false} />
+                {rowData.adresse}
             </>
         );
     };
@@ -390,7 +405,7 @@ export const User = () => {
                     ) : usersQuery.isSuccess ? (
                         <DataTable
                             ref={dt}
-                            value={products}
+                            value={usersQuery.data}
                             selection={selectedProducts}
                             onSelectionChange={(e) => setSelectedProducts(e.value)}
                             dataKey="id"
@@ -407,13 +422,13 @@ export const User = () => {
                         >
                             <Column selectionMode="multiple" headerStyle={{ width: "3rem" }}></Column>
                             <Column field="code" header="Nom" sortable body={codeBodyTemplate} headerStyle={{ width: "14%", minWidth: "10rem" }} className="bg-cyan-400 border-round-top"></Column>
-                            <Column field="name" header="Prenom" sortable body={nameBodyTemplate} headerStyle={{ width: "14%", minWidth: "10rem" }} className="bg-indigo-300 border-round-top"></Column>
+                            <Column field="name" header="sexe" sortable body={nameBodyTemplate} headerStyle={{ width: "14%", minWidth: "10rem" }} className="bg-indigo-300 border-round-top"></Column>
                             <Column field="price" header="CIN" body={priceBodyTemplate} sortable headerStyle={{ width: "14%", minWidth: "8rem" }} className="bg-pink-200 border-round-top"></Column>
                             <Column header="Email" body={imageBodyTemplate} headerStyle={{ width: "14%", minWidth: "10rem" }} className="bg-green-300 border-round-top"></Column>
-                            <Column field="Tel" header="Tel" body={priceBodyTemplate} sortable headerStyle={{ width: "14%", minWidth: "8rem" }} className="bg-pink-200 border-round-top"></Column>
-                            <Column field="category" header="Mot de passe" sortable body={categoryBodyTemplate} headerStyle={{ width: "14%", minWidth: "10rem" }} className="bg-gray-500 border-round-top"></Column>
+                            <Column field="Tel" header="Tel" body={priceBodyTemplate1} sortable headerStyle={{ width: "14%", minWidth: "8rem" }} className="bg-pink-200 border-round-top"></Column>
+                            {/* <Column field="category" header="Mot de passe" sortable body={categoryBodyTemplate} headerStyle={{ width: "14%", minWidth: "10rem" }} className="bg-gray-500 border-round-top"></Column> */}
                             <Column field="rating" header="Adresse" body={ratingBodyTemplate} sortable headerStyle={{ width: "14%", minWidth: "10rem" }} className="bg-pink-100 border-round-top"></Column>
-                            <Column field="name" header="Type" sortable body={nameBodyTemplate} headerStyle={{ width: "14%", minWidth: "10rem" }} className="bg-indigo-300 border-round-top"></Column>
+                            <Column field="name" header="Type" sortable body={nameBodyTemplate1} headerStyle={{ width: "14%", minWidth: "10rem" }} className="bg-indigo-300 border-round-top"></Column>
 
                             <Column body={actionBodyTemplate} style={{ width: "20px" }}></Column>
                         </DataTable>

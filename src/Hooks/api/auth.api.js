@@ -31,7 +31,7 @@ export function useRegisterUser() {
 export function useLoginUser() {
     return useMutation(
         async (values) => {
-            await axios.get(`sanctum/csrf-cookie`);
+            // await axios.get(`sanctum/csrf-cookie`);
             const res = await axios.post("login", values);
             return res.data;
         },
@@ -46,7 +46,7 @@ export function useLogoutUser() {
     return useMutation(
         ["logout-user"],
         async (values) => {
-            await axios.get(`sanctum/csrf-cookie`);
+            // // await axios.get(`sanctum/csrf-cookie`);
             const res = await axios.post("logout", values);
             return res.data;
         },
@@ -94,4 +94,15 @@ export const useLoginStatus = (ignoreInterceptor = false, location, noOnSucces) 
             },
         }
     );
+};
+
+export const useClient = () => {
+    const authStore = useAuthStore();
+
+    return useQuery(["Client"], () => axios.get(`client/all`).then((res) => res.data), {
+        // enabled: authStore?.isLoggedIn === true && true,
+        onSuccess: () => {},
+        onError: () => {},
+        refetchOnWindowFocus: false,
+    });
 };

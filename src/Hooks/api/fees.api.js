@@ -8,8 +8,8 @@ import { useAuthDispatch, useAuthStore } from "../../stores/auth.store";
 export const useFees = () => {
     const authStore = useAuthStore();
 
-    return useQuery(["Feess"], () => axios.get(`Fees`).then((res) => res.data), {
-        enabled: authStore?.isLoggedIn === true && true,
+    return useQuery(["Feess"], () => axios.get(`var-chang`).then((res) => res.data), {
+        //enabled: authStore?.isLoggedIn === true && true,
         onSuccess: () => {},
         onError: () => {},
         refetchOnWindowFocus: false,
@@ -21,11 +21,11 @@ export const useFeesById = () => {
 
     return useMutation(
         async (values) => {
-            const res = await axios.get(`Fees/${values}`);
+            const res = await axios.get(`var-chang/${values}`);
             return res.data;
         },
         {
-            enabled: authStore?.isLoggedIn === true && true,
+            //enabled: authStore?.isLoggedIn === true && true,
             onSuccess: () => {},
         }
     );
@@ -36,11 +36,11 @@ export const useDeleteFeesById = () => {
 
     return useMutation(
         async (values) => {
-            const res = await axios.get(`Fees/${values}`);
+            const res = await axios.delete(`var-chang/${values}`);
             return res.data;
         },
         {
-            enabled: authStore?.isLoggedIn === true && true,
+            //enabled: authStore?.isLoggedIn === true && true,
             onSuccess: () => {},
         }
     );
@@ -51,11 +51,11 @@ export const useCreateFees = () => {
 
     return useMutation(
         async (values) => {
-            const res = await axios.post("Fees", values);
+            const res = await axios.post("var-chang", values);
             return res.data;
         },
         {
-            enabled: authStore?.isLoggedIn === true && true,
+            //enabled: authStore?.isLoggedIn === true && true,
             onSuccess: () => {},
             onError: () => {},
         }
@@ -67,11 +67,11 @@ export const useModifyFees = () => {
 
     return useMutation(
         async (values) => {
-            const res = await axios.put(`Fees/${values.id}`, values);
+            const res = await axios.put(`var-chang/${values.id}`, values);
             return res.data;
         },
         {
-            enabled: authStore?.isLoggedIn === true && true,
+            //enabled: authStore?.isLoggedIn === true && true,
             onSuccess: () => {},
             onError: () => {},
         }

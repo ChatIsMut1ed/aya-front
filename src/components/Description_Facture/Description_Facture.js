@@ -29,12 +29,12 @@ export const Description_Facture = () => {
     const history = useHistory();
     let emptyProduct = {
         id: null,
-        name: "",
-        num_tel: "",
-        num_bank: "",
-        adress: "",
-        ref_tva: "",
+        nom: "",
+        adresse: "",
         email: "",
+        num_bank: "",
+        tel: "",
+        ref_tva: "",
     };
     const [formErrors, setFormErrors] = useState({});
     const [products, setProducts] = useState(null);
@@ -104,7 +104,7 @@ export const Description_Facture = () => {
             }
         } else {
             try {
-                await FactureDesModifyQuery.mutateAsync(formData);
+                await FactureDesModifyQuery.mutateAsync(product);
                 history.push({
                     pathname: "/Description_Facture",
                 });
@@ -163,7 +163,7 @@ export const Description_Facture = () => {
         try {
             await FactureDesDeleteByIdQuery.mutateAsync(product.id);
             history.push({
-                pathname: "/Facture",
+                pathname: "/Description_Facture",
             });
             setProducts(products);
             setDeleteProductDialog(false);
@@ -258,7 +258,7 @@ export const Description_Facture = () => {
         return (
             <>
                 <span className="p-column-title">Code</span>
-                {rowData.code}
+                {rowData.nom}
             </>
         );
     };
@@ -267,7 +267,15 @@ export const Description_Facture = () => {
         return (
             <>
                 <span className="p-column-title">Name</span>
-                {rowData.name}
+                {rowData.tel}
+            </>
+        );
+    };
+    const nameBodyTemplate1 = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Name</span>
+                {rowData.adresse}
             </>
         );
     };
@@ -285,7 +293,23 @@ export const Description_Facture = () => {
         return (
             <>
                 <span className="p-column-title">Price</span>
-                {formatCurrency(rowData.price)}
+                {rowData.num_bank}
+            </>
+        );
+    };
+    const priceBodyTemplate2 = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Price</span>
+                {rowData.email}
+            </>
+        );
+    };
+    const priceBodyTemplate1 = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Price</span>
+                {rowData.ref_tva}
             </>
         );
     };
@@ -383,7 +407,7 @@ export const Description_Facture = () => {
                     ) : FactureDessQuery.isSuccess ? (
                         <DataTable
                             ref={dt}
-                            value={products}
+                            value={FactureDessQuery.data}
                             selection={selectedProducts}
                             onSelectionChange={(e) => setSelectedProducts(e.value)}
                             dataKey="id"
@@ -403,9 +427,9 @@ export const Description_Facture = () => {
 
                             <Column field="name" header="Num_tel" sortable body={nameBodyTemplate} headerStyle={{ width: "15%", minWidth: "10rem" }} className="bg-indigo-300 border-round-top"></Column>
                             <Column field="price" header="Numéro Bancaire" body={priceBodyTemplate} sortable headerStyle={{ width: "15%", minWidth: "8rem" }} className="bg-pink-200 border-round-top"></Column>
-                            <Column field="name" header="Adresse" sortable body={nameBodyTemplate} headerStyle={{ width: "15%", minWidth: "10rem" }} className="bg-indigo-300 border-round-top"></Column>
-                            <Column field="Doit" header="réf TVA" body={priceBodyTemplate} sortable headerStyle={{ width: "15%", minWidth: "8rem" }} className="bg-pink-200 border-round-top"></Column>
-                            <Column field="price" header="Email" body={priceBodyTemplate} sortable headerStyle={{ width: "15%", minWidth: "8rem" }} className="bg-green-300 border-round-top"></Column>
+                            <Column field="name" header="Adresse" sortable body={nameBodyTemplate1} headerStyle={{ width: "15%", minWidth: "10rem" }} className="bg-indigo-300 border-round-top"></Column>
+                            <Column field="Doit" header="réf TVA" body={priceBodyTemplate1} sortable headerStyle={{ width: "15%", minWidth: "8rem" }} className="bg-pink-200 border-round-top"></Column>
+                            <Column field="price" header="Email" body={priceBodyTemplate2} sortable headerStyle={{ width: "15%", minWidth: "8rem" }} className="bg-green-300 border-round-top"></Column>
                             <Column body={actionBodyTemplate} style={{ width: "20px" }}></Column>
                         </DataTable>
                     ) : (
@@ -416,12 +440,12 @@ export const Description_Facture = () => {
                         {/* {product.image && <img src={`assets/demo/images/product/${product.image}`} alt={product.image} width="150" className="mt-0 mx-auto mb-5 block shadow-2" />} */}
                         <div className="field">
                             <label htmlFor="Nom soc">Nom de Société</label>
-                            <InputText id="Nom soc" value={product.name} onChange={(e) => onInputChange(e, "name")} required autoFocus className={classNames({ "p-invalid": submitted && !product.name })} />
+                            <InputText id="Nom soc" value={product.nom} onChange={(e) => onInputChange(e, "nom")} required autoFocus className={classNames({ "p-invalid": submitted && !product.name })} />
                             {/* {submitted && !product.name && <small className="p-invalid">Name is required.</small>} */}
                         </div>
                         <div className="field">
                             <label htmlFor="Num tel">Num_tel</label>
-                            <InputText id="Num tel" value={product.num_tel} onChange={(e) => onInputChange(e, "num_tel")} required autoFocus className={classNames({ "p-invalid": submitted && !product.num_tel })} />
+                            <InputText id="Num tel" value={product.tel} onChange={(e) => onInputChange(e, "tel")} required autoFocus className={classNames({ "p-invalid": submitted && !product.num_tel })} />
                             {/* {submitted && !product.name && <small className="p-invalid">Name is required.</small>} */}
                         </div>
                         <div className="field">
@@ -431,7 +455,7 @@ export const Description_Facture = () => {
                         </div>
                         <div className="field">
                             <label htmlFor="Adresse">Adresse</label>
-                            <InputText id="Adresse" value={product.adress} onChange={(e) => onInputChange(e, "adress")} required autoFocus className={classNames({ "p-invalid": submitted && !product.adress })} />
+                            <InputText id="Adresse" value={product.adresse} onChange={(e) => onInputChange(e, "adresse")} required autoFocus className={classNames({ "p-invalid": submitted && !product.adress })} />
                             {/* {submitted && !product.name && <small className="p-invalid">Name is required.</small>} */}
                         </div>
                         <div className="field">

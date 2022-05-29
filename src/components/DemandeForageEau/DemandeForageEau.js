@@ -16,34 +16,33 @@ import { ProductService } from "../../service/ProductService";
 
 import { Skeleton } from "primereact/skeleton";
 import { Link, useHistory } from "react-router-dom";
-import { useSol, useSolById, useDeleteSolById, useCreateSol, useModifySol } from "../../Hooks/api/sol.api";
+import { useForage, useForageById, useDeleteForageById, useCreateForage, useModifyForage } from "../../Hooks/api/forage.api";
 import { useAuthDispatch } from "../../stores/auth.store.js";
 export const DemandeForageEau = () => {
     // work
-    const SolsQuery = useSol();
-    const SolByIdQuery = useSolById();
-    const SolDeleteByIdQuery = useDeleteSolById();
-    const SolCreateQuery = useCreateSol();
-    const SolModifyQuery = useModifySol();
+    const SolsQuery = useForage();
+    const SolByIdQuery = useForageById();
+    const SolDeleteByIdQuery = useDeleteForageById();
+    const SolCreateQuery = useCreateForage();
+    const SolModifyQuery = useModifyForage();
     const authDispatch = useAuthDispatch();
     const history = useHistory();
     let emptyProduct = {
         id: null,
-        Nom: "",
-        Prenom: "",
-        Adresse: "",
-        CIN: "",
-        NumFraisIM: "",
-        Localisation: "",
-        Tel: "",
-        Décanat: "",
+        nom_postulant: "",
+        prenom: "",
+        cin: "",
+        // date: "",
+        // date_disposition: "",
+        adresse: "",
+        tel: "",
         gouvernorat: "",
-        Superficie: "",
-        TypedeProjet: "",
-        Remarques: "",
-        TypesdePlantes: "",
-        Signature: "",
-        Typesdesignature: "",
+        decanat: "",
+        superficie: "",
+        type_projet: "",
+        remarque: "",
+        type_plante: "",
+        // date_signature: "",
     };
 
     const [formErrors, setFormErrors] = useState({});
@@ -114,7 +113,7 @@ export const DemandeForageEau = () => {
             }
         } else {
             try {
-                await SolModifyQuery.mutateAsync(formData);
+                await SolModifyQuery.mutateAsync(product);
                 history.push({
                     pathname: "/DemandeForageEau",
                 });
@@ -163,12 +162,26 @@ export const DemandeForageEau = () => {
         setDeleteProductDialog(true);
     };
 
-    const deleteProduct = () => {
-        let _products = products.filter((val) => val.id !== product.id);
-        setProducts(_products);
-        setDeleteProductDialog(false);
-        setProduct(emptyProduct);
-        toast.current.show({ severity: "success", summary: "Successful", detail: "Product Deleted", life: 3000 });
+    const deleteProduct = async (e) => {
+        // let _products = products.filter((val) => val.id !== product.id);
+        // setProducts(_products);
+        // setDeleteProductDialog(false);
+        // setProduct(emptyProduct);
+        // toast.current.show({ severity: "success", summary: "Successful", detail: "Product Deleted", life: 3000 });
+        try {
+            await SolDeleteByIdQuery.mutateAsync(product.client_id);
+            history.push({
+                pathname: "/DemandeForageEau",
+            });
+            setProducts(products);
+            setDeleteProductDialog(false);
+            setProduct(emptyProduct);
+            toast.current.show({ severity: "success", summary: "Successful", detail: "Product Created", life: 3000 });
+        } catch (error) {
+            const errorsObject = error?.response?.data?.errors;
+            setFormErrors(errorsObject);
+            toast.current.show({ severity: "error", summary: "Error Delete", detail: `${errorsObject}`, life: 3000 });
+        }
     };
 
     const findIndexById = (id) => {
@@ -206,20 +219,20 @@ export const DemandeForageEau = () => {
         // setDeleteProductsDialog(false);
         // setSelectedProducts(null);
         // toast.current.show({ severity: "success", summary: "Successful", detail: "Products Deleted", life: 3000 });
-        try {
-            await SolDeleteByIdQuery.mutateAsync(product.id);
-            history.push({
-                pathname: "/DemandeForageEau",
-            });
-            setProducts(products);
-            setDeleteProductDialog(false);
-            setProduct(emptyProduct);
-            toast.current.show({ severity: "success", summary: "Successful", detail: "Product Created", life: 3000 });
-        } catch (error) {
-            const errorsObject = error?.response?.data?.errors;
-            setFormErrors(errorsObject);
-            toast.current.show({ severity: "error", summary: "Error Delete", detail: `${errorsObject}`, life: 3000 });
-        }
+        // try {
+        //     await SolDeleteByIdQuery.mutateAsync(product.id);
+        //     history.push({
+        //         pathname: "/DemandeForageEau",
+        //     });
+        //     setProducts(products);
+        //     setDeleteProductDialog(false);
+        //     setProduct(emptyProduct);
+        //     toast.current.show({ severity: "success", summary: "Successful", detail: "Product Created", life: 3000 });
+        // } catch (error) {
+        //     const errorsObject = error?.response?.data?.errors;
+        //     setFormErrors(errorsObject);
+        //     toast.current.show({ severity: "error", summary: "Error Delete", detail: `${errorsObject}`, life: 3000 });
+        // }
     };
 
     const onCategoryChange = (e) => {
@@ -267,7 +280,31 @@ export const DemandeForageEau = () => {
         return (
             <>
                 <span className="p-column-title">Code</span>
-                {rowData.code}
+                {rowData.nom_postulant}
+            </>
+        );
+    };
+    const codeBodyTemplate4 = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Code</span>
+                {rowData.date_signature}
+            </>
+        );
+    };
+    const codeBodyTemplate3 = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Code</span>
+                {rowData.type_plante}
+            </>
+        );
+    };
+    const codeBodyTemplate1 = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Code</span>
+                {rowData.superficie}
             </>
         );
     };
@@ -276,7 +313,23 @@ export const DemandeForageEau = () => {
         return (
             <>
                 <span className="p-column-title">Name</span>
-                {rowData.name}
+                {rowData.prenom}
+            </>
+        );
+    };
+    const nameBodyTemplate2 = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Name</span>
+                {rowData.type_projet}
+            </>
+        );
+    };
+    const nameBodyTemplate1 = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Name</span>
+                {rowData.tel}
             </>
         );
     };
@@ -285,7 +338,18 @@ export const DemandeForageEau = () => {
         return (
             <>
                 <span className="p-column-title">Image</span>
-                <img src={`assets/demo/images/product/${rowData.image}`} alt={rowData.image} className="shadow-2" width="100" />
+                {/* <img src={`assets/demo/images/product/${rowData.image}`} alt={rowData.image} className="shadow-2" width="100" /> */}
+                {rowData.cin}
+            </>
+        );
+    };
+
+    const imageBodyTemplate1 = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Image</span>
+                {/* <img src={`assets/demo/images/product/${rowData.image}`} alt={rowData.image} className="shadow-2" width="100" /> */}
+                {rowData.gouvernorat}
             </>
         );
     };
@@ -294,16 +358,23 @@ export const DemandeForageEau = () => {
         return (
             <>
                 <span className="p-column-title">Price</span>
-                {formatCurrency(rowData.price)}
+                {rowData.adresse}
             </>
         );
     };
-
+    const priceBodyTemplate1 = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Price</span>
+                {rowData.remarque}
+            </>
+        );
+    };
     const categoryBodyTemplate = (rowData) => {
         return (
             <>
                 <span className="p-column-title">Category</span>
-                {rowData.category}
+                {rowData.decanat}
             </>
         );
     };
@@ -400,7 +471,7 @@ export const DemandeForageEau = () => {
                     ) : SolsQuery.isSuccess ? (
                         <DataTable
                             ref={dt}
-                            value={products}
+                            value={SolsQuery.data}
                             selection={selectedProducts}
                             onSelectionChange={(e) => setSelectedProducts(e.value)}
                             dataKey="id"
@@ -420,17 +491,17 @@ export const DemandeForageEau = () => {
                             <Column field="name" header="Prenom" sortable body={nameBodyTemplate} headerStyle={{ width: "8%", minWidth: "10rem" }} className="bg-indigo-300 border-round-top"></Column>
                             <Column field="price" header="Adresse" body={priceBodyTemplate} sortable headerStyle={{ width: "8%", minWidth: "8rem" }} className="bg-pink-200 border-round-top"></Column>
                             <Column header="CIN" body={imageBodyTemplate} headerStyle={{ width: "8%", minWidth: "10rem" }} className="bg-green-300 border-round-top"></Column>
-                            <Column field="Date" header="Num_Frais_IM" body={priceBodyTemplate} sortable headerStyle={{ width: "8%", minWidth: "8rem" }} className="bg-pink-200 border-round-top"></Column>
-                            <Column field="Date_De_Disposition" header="Localisation" sortable body={codeBodyTemplate} headerStyle={{ width: "8%", minWidth: "10rem" }} className="bg-cyan-400 border-round-top"></Column>
-                            <Column field="name" header="Tel" sortable body={nameBodyTemplate} headerStyle={{ width: "8%", minWidth: "10rem" }} className="bg-indigo-300 border-round-top"></Column>
-                            <Column field="price" header="Décanat" body={priceBodyTemplate} sortable headerStyle={{ width: "8%", minWidth: "8rem" }} className="bg-pink-200 border-round-top"></Column>
-                            <Column header="gouvernorat" body={imageBodyTemplate} headerStyle={{ width: "8%", minWidth: "10rem" }} className="bg-green-300 border-round-top"></Column>
-                            <Column field="code" header="Superficie" sortable body={codeBodyTemplate} headerStyle={{ width: "8%", minWidth: "8rem" }} className="bg-cyan-400 border-round-top"></Column>
-                            <Column field="name" header="Type_de_Projet" sortable body={nameBodyTemplate} headerStyle={{ width: "8%", minWidth: "10rem" }} className="bg-indigo-300 border-round-top"></Column>
-                            <Column field="price" header="Remarques" body={priceBodyTemplate} sortable headerStyle={{ width: "8%", minWidth: "8rem" }} className="bg-pink-200 border-round-top"></Column>
-                            <Column field="Date_De_Disposition" header="Types_de_Plantes" sortable body={codeBodyTemplate} headerStyle={{ width: "8%", minWidth: "10rem" }} className="bg-cyan-400 border-round-top"></Column>
-                            <Column field="Date" header="Signature" body={priceBodyTemplate} sortable headerStyle={{ width: "8%", minWidth: "8rem" }} className="bg-pink-200 border-round-top"></Column>
-                            <Column field="Date_De_Disposition" header="Types_de_signature" sortable body={codeBodyTemplate} headerStyle={{ width: "8%", minWidth: "10rem" }} className="bg-cyan-400 border-round-top"></Column>
+                            {/* <Column field="Date" header="Num_Frais_IM" body={priceBodyTemplate} sortable headerStyle={{ width: "8%", minWidth: "8rem" }} className="bg-pink-200 border-round-top"></Column> */}
+                            {/* <Column field="Date_De_Disposition" header="Localisation" sortable body={codeBodyTemplate} headerStyle={{ width: "8%", minWidth: "10rem" }} className="bg-cyan-400 border-round-top"></Column> */}
+                            <Column field="name" header="Tel" sortable body={nameBodyTemplate1} headerStyle={{ width: "8%", minWidth: "10rem" }} className="bg-indigo-300 border-round-top"></Column>
+                            <Column field="price" header="Décanat" body={categoryBodyTemplate} sortable headerStyle={{ width: "8%", minWidth: "8rem" }} className="bg-pink-200 border-round-top"></Column>
+                            <Column header="gouvernorat" body={imageBodyTemplate1} headerStyle={{ width: "8%", minWidth: "10rem" }} className="bg-green-300 border-round-top"></Column>
+                            <Column field="code" header="Superficie" sortable body={codeBodyTemplate1} headerStyle={{ width: "8%", minWidth: "8rem" }} className="bg-cyan-400 border-round-top"></Column>
+                            <Column field="name" header="Type_de_Projet" sortable body={nameBodyTemplate2} headerStyle={{ width: "8%", minWidth: "10rem" }} className="bg-indigo-300 border-round-top"></Column>
+                            <Column field="price" header="Remarques" body={priceBodyTemplate1} sortable headerStyle={{ width: "8%", minWidth: "8rem" }} className="bg-pink-200 border-round-top"></Column>
+                            <Column field="Date_De_Disposition" header="Types_de_Plantes" sortable body={codeBodyTemplate3} headerStyle={{ width: "8%", minWidth: "10rem" }} className="bg-cyan-400 border-round-top"></Column>
+                            {/* <Column field="Date" header="Signature" body={priceBodyTemplate} sortable headerStyle={{ width: "8%", minWidth: "8rem" }} className="bg-pink-200 border-round-top"></Column> */}
+                            <Column field="Date_De_Disposition" header="Date_de_signature" sortable body={codeBodyTemplate4} headerStyle={{ width: "8%", minWidth: "10rem" }} className="bg-cyan-400 border-round-top"></Column>
                             <Column body={actionBodyTemplate} style={{ width: "20px" }}></Column>
                         </DataTable>
                     ) : (
@@ -441,79 +512,79 @@ export const DemandeForageEau = () => {
                         {/* {product.image && <img src={`assets/demo/images/product/${product.image}`} alt={product.image} width="150" className="mt-0 mx-auto mb-5 block shadow-2" />} */}
                         <div className="field">
                             <label htmlFor="Nom">Nom</label>
-                            <InputText id="Nom" value={product.Nom} onChange={(e) => onInputChange(e, "Nom")} required autoFocus className={classNames({ "p-invalid": submitted && !product.Nom })} />
+                            <InputText id="Nom" value={product.nom_postulant} onChange={(e) => onInputChange(e, "nom_postulant")} required autoFocus className={classNames({ "p-invalid": submitted && !product.nom_postulant })} />
                             {/* {submitted && !product.name && <small className="p-invalid">Name is required.</small>} */}
                         </div>
                         <div className="field">
                             <label htmlFor="Prenom">Prenom</label>
-                            <InputText id="Prenom" value={product.Prenom} onChange={(e) => onInputChange(e, "Prenom")} required autoFocus className={classNames({ "p-invalid": submitted && !product.Prenom })} />
+                            <InputText id="Prenom" value={product.prenom} onChange={(e) => onInputChange(e, "prenom")} required autoFocus className={classNames({ "p-invalid": submitted && !product.prenom })} />
                             {/* {submitted && !product.name && <small className="p-invalid">Name is required.</small>} */}
                         </div>
                         <div className="field">
-                            <label htmlFor="Adresse">Adresse</label>
-                            <InputText id="Adresse" value={product.Adresse} onChange={(e) => onInputChange(e, "Adresse")} required autoFocus className={classNames({ "p-invalid": submitted && !product.Adresse })} />
+                            <label htmlFor="Adresse">Cin</label>
+                            <InputText id="Adresse" value={product.cin} onChange={(e) => onInputChange(e, "cin")} required autoFocus className={classNames({ "p-invalid": submitted && !product.cin })} />
                             {/* {submitted && !product.name && <small className="p-invalid">Name is required.</small>} */}
                         </div>
                         <div className="field">
-                            <label htmlFor="CIN">CIN</label>
-                            <InputText id="CIN" value={product.CIN} onChange={(e) => onInputChange(e, "CIN")} required autoFocus className={classNames({ "p-invalid": submitted && !product.CIN })} />
+                            <label htmlFor="CIN">Adresse</label>
+                            <InputText id="CIN" value={product.adresse} onChange={(e) => onInputChange(e, "adresse")} required autoFocus className={classNames({ "p-invalid": submitted && !product.adresse })} />
                             {/* {submitted && !product.name && <small className="p-invalid">Name is required.</small>} */}
                         </div>
                         <div className="field">
-                            <label htmlFor="NumFraisIM">Num_Frais_IM</label>
-                            <InputText id="NumFraisIM" value={product.NumFraisIM} onChange={(e) => onInputChange(e, "NumFraisIM")} required autoFocus className={classNames({ "p-invalid": submitted && !product.NumFraisIM })} />
+                            <label htmlFor="NumFraisIM">Tel</label>
+                            <InputText id="NumFraisIM" value={product.tel} onChange={(e) => onInputChange(e, "tel")} required autoFocus className={classNames({ "p-invalid": submitted && !product.tel })} />
                             {/* {submitted && !product.name && <small className="p-invalid">Name is required.</small>} */}
                         </div>
                         <div className="field">
-                            <label htmlFor="Localisation">Localisation</label>
-                            <InputText id="Localisation" value={product.Localisation} onChange={(e) => onInputChange(e, "Localisation")} required autoFocus className={classNames({ "p-invalid": submitted && !product.Localisation })} />
+                            <label htmlFor="Localisation">Gouvernorat</label>
+                            <InputText id="Localisation" value={product.gouvernorat} onChange={(e) => onInputChange(e, "gouvernorat")} required autoFocus className={classNames({ "p-invalid": submitted && !product.gouvernorat })} />
                             {/* {submitted && !product.name && <small className="p-invalid">Name is required.</small>} */}
                         </div>
                         <div className="field">
-                            <label htmlFor="Tel">Tel</label>
-                            <InputText id="Tel" value={product.Tel} onChange={(e) => onInputChange(e, "Tel")} required autoFocus className={classNames({ "p-invalid": submitted && !product.Tel })} />
+                            <label htmlFor="Tel">Decanat</label>
+                            <InputText id="Tel" value={product.decanat} onChange={(e) => onInputChange(e, "decanat")} required autoFocus className={classNames({ "p-invalid": submitted && !product.decanat })} />
                             {/* {submitted && !product.name && <small className="p-invalid">Name is required.</small>} */}
                         </div>
                         <div className="field">
-                            <label htmlFor="Décanat">Décanat</label>
-                            <InputText id="Décanat" value={product.Décanat} onChange={(e) => onInputChange(e, "Décanat")} required autoFocus className={classNames({ "p-invalid": submitted && !product.Décanat })} />
+                            <label htmlFor="Décanat">Superficie</label>
+                            <InputText id="Décanat" value={product.superficie} onChange={(e) => onInputChange(e, "superficie")} required autoFocus className={classNames({ "p-invalid": submitted && !product.superficie })} />
                             {/* {submitted && !product.name && <small className="p-invalid">Name is required.</small>} */}
                         </div>
                         <div className="field">
-                            <label htmlFor="gouvernorat">gouvernorat</label>
-                            <InputText id="gouvernorat" value={product.gouvernorat} onChange={(e) => onInputChange(e, "gouvernorat")} required autoFocus className={classNames({ "p-invalid": submitted && !product.gouvernorat })} />
+                            <label htmlFor="gouvernorat">Type Projet</label>
+                            <InputText id="gouvernorat" value={product.type_projet} onChange={(e) => onInputChange(e, "type_projet")} required autoFocus className={classNames({ "p-invalid": submitted && !product.type_projet })} />
                             {/* {submitted && !product.name && <small className="p-invalid">Name is required.</small>} */}
                         </div>
                         <div className="field">
-                            <label htmlFor="Superficie">Superficie</label>
-                            <InputText id="Superficie" value={product.Superficie} onChange={(e) => onInputChange(e, "Superficie")} required autoFocus className={classNames({ "p-invalid": submitted && !product.Superficie })} />
+                            <label htmlFor="Superficie">Remarque</label>
+                            <InputText id="Superficie" value={product.remarque} onChange={(e) => onInputChange(e, "remarque")} required autoFocus className={classNames({ "p-invalid": submitted && !product.remarque })} />
                             {/* {submitted && !product.name && <small className="p-invalid">Name is required.</small>} */}
                         </div>
                         <div className="field">
-                            <label htmlFor="TypedeProjet">Type_de_Projet</label>
-                            <InputText id="TypedeProjet" value={product.TypedeProjet} onChange={(e) => onInputChange(e, "TypedeProjet")} required autoFocus className={classNames({ "p-invalid": submitted && !product.TypedeProjet })} />
+                            <label htmlFor="TypedeProjet">Type Plante</label>
+                            <InputText id="type_plante" value={product.type_plante} onChange={(e) => onInputChange(e, "type_plante")} required autoFocus className={classNames({ "p-invalid": submitted && !product.type_plante })} />
                             {/* {submitted && !product.name && <small className="p-invalid">Name is required.</small>} */}
                         </div>
-                        <div className="field">
+                        {/* <div className="field">
                             <label htmlFor="Remarques">Remarques</label>
                             <InputText id="Remarques" value={product.Remarques} onChange={(e) => onInputChange(e, "Remarques")} required autoFocus className={classNames({ "p-invalid": submitted && !product.Remarques })} />
-                            {/* {submitted && !product.name && <small className="p-invalid">Name is required.</small>} */}
+                            {submitted && !product.name && <small className="p-invalid">Name is required.</small>}
                         </div>
                         <div className="field">
                             <label htmlFor="TypesdePlantes">Types_de_Plantes</label>
                             <InputText id="TypesdePlantes" value={product.TypesdePlantes} onChange={(e) => onInputChange(e, "TypesdePlantes")} required autoFocus className={classNames({ "p-invalid": submitted && !product.TypesdePlantes })} />
-                            {/* {submitted && !product.name && <small className="p-invalid">Name is required.</small>} */}
+                            {submitted && !product.name && <small className="p-invalid">Name is required.</small>}
                         </div>
                         <div className="field">
                             <label htmlFor="Signature">Signature</label>
                             <InputText id="Signature" value={product.Signature} onChange={(e) => onInputChange(e, "Signature")} required autoFocus className={classNames({ "p-invalid": submitted && !product.Signature })} />
-                            {/* {submitted && !product.name && <small className="p-invalid">Name is required.</small>} */}
+                            {submitted && !product.name && <small className="p-invalid">Name is required.</small>}
                         </div>
                         <div className="field">
                             <label htmlFor="Typesdesignature">Types_de_signature</label>
                             <InputText id="Typesdesignature" value={product.Typesdesignature} onChange={(e) => onInputChange(e, "Typesdesignature")} required autoFocus className={classNames({ "p-invalid": submitted && !product.Typesdesignature })} />
-                            {/* {submitted && !product.name && <small className="p-invalid">Name is required.</small>} */}
-                        </div>
+                            {submitted && !product.name && <small className="p-invalid">Name is required.</small>}
+                        </div> */}
                     </Dialog>
                     <Dialog visible={factureDialog} style={{ width: "450px" }} header="Product Details" modal className="p-fluid" footer={productDialogFooter} onHide={hideDialog}>
                         <aside className="profile-card" />

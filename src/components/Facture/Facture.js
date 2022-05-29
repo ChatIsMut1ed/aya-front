@@ -13,28 +13,32 @@ import { InputNumber } from "primereact/inputnumber";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 import { ProductService } from "../../service/ProductService";
-
+import { Dropdown } from "primereact/dropdown";
 import { Skeleton } from "primereact/skeleton";
 import { Link, useHistory } from "react-router-dom";
 import { useFacture, useFactureById, useDeleteFactureById, useCreateFacture, useModifyFacture } from "../../Hooks/api/facture.api";
+import { useActivity } from "../../Hooks/api/activity.api";
 import { useAuthDispatch } from "../../stores/auth.store.js";
 export const Facture = () => {
     // work
     const FacturesQuery = useFacture();
+    const ActivityQuery = useActivity();
     const FactureByIdQuery = useFactureById();
     const FactureDeleteByIdQuery = useDeleteFactureById();
     const FactureCreateQuery = useCreateFacture();
     const FactureModifyQuery = useModifyFacture();
+    const [selectedCity1, setSelectedCity1] = useState(null);
     const authDispatch = useAuthDispatch();
     const history = useHistory();
-
+    const onCityChange = (e) => {
+        setSelectedCity1(e.value);
+    };
     const [formErrors, setFormErrors] = useState({});
     let emptyProduct = {
         id: null,
-        id_facture: null,
         qts: "",
         date: "",
-        tel: null,
+        doit: "",
     };
 
     const [products, setProducts] = useState(null);
@@ -87,6 +91,7 @@ export const Facture = () => {
             // product[key] = key !== "logo" ? value.trim() : value;
             formData.append(key, value);
         }
+        formData.append("act_id", selectedCity1.code);
         if (product.id == null) {
             try {
                 await FactureCreateQuery.mutateAsync(formData);
@@ -258,7 +263,7 @@ export const Facture = () => {
         return (
             <>
                 <span className="p-column-title">Code</span>
-                {rowData.code}
+                {rowData.qts}
             </>
         );
     };
@@ -267,7 +272,7 @@ export const Facture = () => {
         return (
             <>
                 <span className="p-column-title">Name</span>
-                {rowData.name}
+                {rowData.act_id}
             </>
         );
     };
@@ -276,7 +281,8 @@ export const Facture = () => {
         return (
             <>
                 <span className="p-column-title">Image</span>
-                <img src={`assets/demo/images/product/${rowData.image}`} alt={rowData.image} className="shadow-2" width="100" />
+                {rowData.date}
+                {/* <img src={`assets/demo/images/product/${rowData.image}`} alt={rowData.image} className="shadow-2" width="100" /> */}
             </>
         );
     };
@@ -285,7 +291,7 @@ export const Facture = () => {
         return (
             <>
                 <span className="p-column-title">Price</span>
-                {formatCurrency(rowData.price)}
+                {rowData.doit}
             </>
         );
     };
@@ -382,7 +388,7 @@ export const Facture = () => {
                     ) : FacturesQuery.isSuccess ? (
                         <DataTable
                             ref={dt}
-                            value={products}
+                            value={FacturesQuery.data}
                             selection={selectedProducts}
                             onSelectionChange={(e) => setSelectedProducts(e.value)}
                             dataKey="id"
@@ -399,11 +405,10 @@ export const Facture = () => {
                         >
                             <Column selectionMode="multiple" headerStyle={{ width: "3rem" }}></Column>
                             <Column field="code" header="Quantité" sortable body={codeBodyTemplate} headerStyle={{ width: "25%", minWidth: "10rem" }} className="bg-cyan-400 border-round-top"></Column>
-                            <Column field="name" header="IDFacture" sortable body={nameBodyTemplate} headerStyle={{ width: "25%", minWidth: "10rem" }} className="bg-indigo-300 border-round-top"></Column>
+                            <Column field="name" header="IDActivie" sortable body={nameBodyTemplate} headerStyle={{ width: "25%", minWidth: "10rem" }} className="bg-indigo-300 border-round-top"></Column>
 
                             <Column header="Date" body={imageBodyTemplate} headerStyle={{ width: "25%", minWidth: "10rem" }} className="bg-green-300 border-round-top"></Column>
-                            <Column field="Doit" header="Tel" body={priceBodyTemplate} sortable headerStyle={{ width: "25%", minWidth: "8rem" }} className="bg-pink-200 border-round-top"></Column>
-
+                            <Column field="Doit" header="Doit" body={priceBodyTemplate} sortable headerStyle={{ width: "25%", minWidth: "8rem" }} className="bg-pink-200 border-round-top"></Column>
                             <Column body={actionBodyTemplate} style={{ width: "20px" }}></Column>
                         </DataTable>
                     ) : (
@@ -414,12 +419,14 @@ export const Facture = () => {
                         {/* {product.image && <img src={`assets/demo/images/product/${product.image}`} alt={product.image} width="150" className="mt-0 mx-auto mb-5 block shadow-2" />} */}
                         <div className="field">
                             <label htmlFor="Quantité">Quantité</label>
-                            <InputText id="Quantité" value={product.id_facture} onChange={(e) => onInputChange(e, "id_facture")} required autoFocus className={classNames({ "p-invalid": submitted && !product.id_facture })} />
+                            <InputText id="Quantité" value={product.qts} onChange={(e) => onInputChange(e, "qts")} required autoFocus className={classNames({ "p-invalid": submitted && !product.qts })} />
                             {/* {submitted && !product.name && <small className="p-invalid">Quantité is required.</small>} */}
                         </div>
                         <div className="field">
-                            <label htmlFor="IDFacture">IDFacture</label>
-                            <InputText id="IDFacture" value={product.qts} onChange={(e) => onInputChange(e, "qts")} required autoFocus className={classNames({ "p-invalid": submitted && !product.qts })} />
+                            <label htmlFor="IDFacture">IDActivie</label>
+                            {/* {console.log(ActivityQuery.isSuccess ? ActivityQuery.data : [])} */}
+                            {/* <Dropdown value={product.act_id} options={cities.name} onChange={(e) => onInputChange(e, "act_id")} optionLabel="act_id" placeholder="Select Activité" /> */}
+                            <Dropdown value={selectedCity1} options={ActivityQuery.isSuccess ? ActivityQuery.data : []} onChange={onCityChange} optionLabel="name" placeholder="Select a City" />
                             {/* {submitted && !product.name && <small className="p-invalid">TVA ID is required.</small>} */}
                         </div>
                         <div className="field">
@@ -428,8 +435,8 @@ export const Facture = () => {
                             {/* {submitted && !product.name && <small className="p-invalid">Name is required.</small>} */}
                         </div>
                         <div className="field">
-                            <label htmlFor="TEL">TEL</label>
-                            <InputText id="TEL" value={product.tel} onChange={(e) => onInputChange(e, "tel")} required autoFocus className={classNames({ "p-invalid": submitted && !product.tel })} />
+                            <label htmlFor="TEL">Doit</label>
+                            <InputText id="TEL" value={product.doit} onChange={(e) => onInputChange(e, "doit")} required autoFocus className={classNames({ "p-invalid": submitted && !product.tel })} />
                             {/* {submitted && !product.name && <small className="p-invalid">Name is required.</small>} */}
                         </div>
                     </Dialog>

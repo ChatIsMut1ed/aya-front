@@ -8,8 +8,8 @@ import { useAuthDispatch, useAuthStore } from "../../stores/auth.store";
 export const useDevisObj = () => {
     const authStore = useAuthStore();
 
-    return useQuery(["DevisObbjs"], () => axios.get(`DevisObbj`).then((res) => res.data), {
-        enabled: authStore?.isLoggedIn === true && true,
+    return useQuery(["DevisObbjs"], () => axios.get(`devis-obj`).then((res) => res.data), {
+        //enabled: authStore?.isLoggedIn === true && true,
         onSuccess: () => {},
         onError: () => {},
         refetchOnWindowFocus: false,
@@ -21,11 +21,11 @@ export const useDevisObbjById = () => {
 
     return useMutation(
         async (values) => {
-            const res = await axios.get(`DevisObbj/${values}`);
+            const res = await axios.get(`devis-obj/${values}`);
             return res.data;
         },
         {
-            enabled: authStore?.isLoggedIn === true && true,
+            //enabled: authStore?.isLoggedIn === true && true,
             onSuccess: () => {},
         }
     );
@@ -36,11 +36,11 @@ export const useDeleteDevisObbjById = () => {
 
     return useMutation(
         async (values) => {
-            const res = await axios.get(`DevisObbj/${values}`);
+            const res = await axios.delete(`devis-obj/${values}`);
             return res.data;
         },
         {
-            enabled: authStore?.isLoggedIn === true && true,
+            //enabled: authStore?.isLoggedIn === true && true,
             onSuccess: () => {},
         }
     );
@@ -51,11 +51,11 @@ export const useCreateDevisObbj = () => {
 
     return useMutation(
         async (values) => {
-            const res = await axios.post("DevisObbj", values);
+            const res = await axios.post("devis-obj", values);
             return res.data;
         },
         {
-            enabled: authStore?.isLoggedIn === true && true,
+            //enabled: authStore?.isLoggedIn === true && true,
             onSuccess: () => {},
             onError: () => {},
         }
@@ -67,11 +67,11 @@ export const useModifyDevisObj = () => {
 
     return useMutation(
         async (values) => {
-            const res = await axios.put(`DevisObbj/${values.id}`, values);
+            const res = await axios.put(`devis-obj/${values.id}`, values);
             return res.data;
         },
         {
-            enabled: authStore?.isLoggedIn === true && true,
+            //enabled: authStore?.isLoggedIn === true && true,
             onSuccess: () => {},
             onError: () => {},
         }

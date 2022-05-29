@@ -8,8 +8,8 @@ import { useAuthDispatch, useAuthStore } from "../../stores/auth.store";
 export const useFacture = () => {
     const authStore = useAuthStore();
 
-    return useQuery(["Factures"], () => axios.get(`Facture`).then((res) => res.data), {
-        enabled: authStore?.isLoggedIn === true && true,
+    return useQuery(["Factures"], () => axios.get(`dem-fact`).then((res) => res.data), {
+        //enabled: authStore?.isLoggedIn === true && true,
         onSuccess: () => {},
         onError: () => {},
         refetchOnWindowFocus: false,
@@ -21,11 +21,11 @@ export const useFactureById = () => {
 
     return useMutation(
         async (values) => {
-            const res = await axios.get(`Facture/${values}`);
+            const res = await axios.get(`dem-fact/${values}`);
             return res.data;
         },
         {
-            enabled: authStore?.isLoggedIn === true && true,
+            //enabled: authStore?.isLoggedIn === true && true,
             onSuccess: () => {},
         }
     );
@@ -36,11 +36,11 @@ export const useDeleteFactureById = () => {
 
     return useMutation(
         async (values) => {
-            const res = await axios.get(`Facture/${values}`);
+            const res = await axios.get(`dem-fact/${values}`);
             return res.data;
         },
         {
-            enabled: authStore?.isLoggedIn === true && true,
+            //enabled: authStore?.isLoggedIn === true && true,
             onSuccess: () => {},
         }
     );
@@ -51,11 +51,11 @@ export const useCreateFacture = () => {
 
     return useMutation(
         async (values) => {
-            const res = await axios.post("Facture", values);
+            const res = await axios.post("dem-fact", values);
             return res.data;
         },
         {
-            enabled: authStore?.isLoggedIn === true && true,
+            //enabled: authStore?.isLoggedIn === true && true,
             onSuccess: () => {},
             onError: () => {},
         }
@@ -67,11 +67,11 @@ export const useModifyFacture = () => {
 
     return useMutation(
         async (values) => {
-            const res = await axios.put(`Facture/${values.id}`, values);
+            const res = await axios.put(`dem-fact/${values.id}`, values);
             return res.data;
         },
         {
-            enabled: authStore?.isLoggedIn === true && true,
+            //enabled: authStore?.isLoggedIn === true && true,
             onSuccess: () => {},
             onError: () => {},
         }

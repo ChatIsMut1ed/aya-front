@@ -30,7 +30,7 @@ export const Variable_Changeante = () => {
     let emptyProduct = {
         id: null,
         tva: "",
-        timber: "",
+        timbre: "",
     };
 
     const [formErrors, setFormErrors] = useState({});
@@ -101,7 +101,7 @@ export const Variable_Changeante = () => {
             }
         } else {
             try {
-                await FeeModifyQuery.mutateAsync(formData);
+                await FeeModifyQuery.mutateAsync(product);
                 history.push({
                     pathname: "/Variable_Changeante",
                 });
@@ -160,7 +160,7 @@ export const Variable_Changeante = () => {
         try {
             await FeeDeleteByIdQuery.mutateAsync(product.id);
             history.push({
-                pathname: "/Facture",
+                pathname: "/Variable_Changeante",
             });
             setProducts(products);
             setDeleteProductDialog(false);
@@ -255,7 +255,7 @@ export const Variable_Changeante = () => {
         return (
             <>
                 <span className="p-column-title">Code</span>
-                {rowData.code}
+                {rowData.timbre}
             </>
         );
     };
@@ -264,7 +264,7 @@ export const Variable_Changeante = () => {
         return (
             <>
                 <span className="p-column-title">Name</span>
-                {rowData.name}
+                {rowData.tva}
             </>
         );
     };
@@ -375,7 +375,7 @@ export const Variable_Changeante = () => {
                     ) : FeesQuery.isSuccess ? (
                         <DataTable
                             ref={dt}
-                            value={products}
+                            value={FeesQuery.data}
                             selection={selectedProducts}
                             onSelectionChange={(e) => setSelectedProducts(e.value)}
                             dataKey="id"
@@ -391,8 +391,8 @@ export const Variable_Changeante = () => {
                             responsiveLayout="scroll"
                         >
                             <Column selectionMode="multiple" headerStyle={{ width: "3rem" }}></Column>
-                            <Column field="code" header="TVA" sortable body={codeBodyTemplate} headerStyle={{ width: "50%", minWidth: "10rem" }} className="bg-cyan-400 border-round-top"></Column>
-                            <Column field="name" header="Timbre" sortable body={nameBodyTemplate} headerStyle={{ width: "50%", minWidth: "10rem" }} className="bg-indigo-300 border-round-top"></Column>
+                            <Column field="code" header="TVA" sortable body={nameBodyTemplate} headerStyle={{ width: "50%", minWidth: "10rem" }} className="bg-cyan-400 border-round-top"></Column>
+                            <Column field="name" header="Timbre" sortable body={codeBodyTemplate} headerStyle={{ width: "50%", minWidth: "10rem" }} className="bg-indigo-300 border-round-top"></Column>
 
                             <Column body={actionBodyTemplate} style={{ width: "20px" }}></Column>
                         </DataTable>
@@ -409,7 +409,7 @@ export const Variable_Changeante = () => {
                         </div>
                         <div className="field">
                             <label htmlFor="Timbre">Timbre</label>
-                            <InputText id="Timbre" value={product.timber} onChange={(e) => onInputChange(e, "timber")} required autoFocus className={classNames({ "p-invalid": submitted && !product.timber })} />
+                            <InputText id="Timbre" value={product.timbre} onChange={(e) => onInputChange(e, "timbre")} required autoFocus className={classNames({ "p-invalid": submitted && !product.timbre })} />
                             {/* {submitted && !product.name && <small className="p-invalid">Name is required.</small>} */}
                         </div>
                     </Dialog>

@@ -5,23 +5,32 @@ import { useHistory } from "react-router-dom";
 import { useAuthDispatch, useAuthStore } from "../../stores/auth.store";
 
 // fake api https://jsonplaceholder.typicode.com/todos/1
-export const useUser = () => {
+export const useDecla = () => {
     const authStore = useAuthStore();
 
-    return useQuery(["users"], () => axios.get(`client`).then((res) => res.data), {
+    return useQuery(["Declas"], () => axios.get(`decla`).then((res) => res.data), {
         // enabled: authStore?.isLoggedIn === true && true,
         onSuccess: () => {},
         onError: () => {},
         refetchOnWindowFocus: false,
     });
 };
+export const useDeclaAll = () => {
+    const authStore = useAuthStore();
 
-export const useUserById = () => {
+    return useQuery(["Declas"], () => axios.get(`decla/all`).then((res) => res.data), {
+        // enabled: authStore?.isLoggedIn === true && true,
+        onSuccess: () => {},
+        onError: () => {},
+        refetchOnWindowFocus: false,
+    });
+};
+export const useDeclaById = () => {
     const authStore = useAuthStore();
 
     return useMutation(
         async (values) => {
-            const res = await axios.get(`client/${values}`);
+            const res = await axios.get(`decla/${values}`);
             return res.data;
         },
         {
@@ -31,12 +40,12 @@ export const useUserById = () => {
     );
 };
 
-export const useDeleteUserById = () => {
+export const useDeleteDeclaById = () => {
     const authStore = useAuthStore();
 
     return useMutation(
         async (values) => {
-            const res = await axios.get(`client/${values}`);
+            const res = await axios.get(`decla/${values}`);
             return res.data;
         },
         {
@@ -45,13 +54,26 @@ export const useDeleteUserById = () => {
         }
     );
 };
-
-export const useCreateUser = () => {
+export const useDeclaByCin = () => {
     const authStore = useAuthStore();
 
     return useMutation(
         async (values) => {
-            const res = await axios.post("client", values);
+            const res = await axios.get(`client/${values}`);
+            return res.data;
+        },
+        {
+            //enabled: authStore?.isLoggedIn === true && true,
+            onSuccess: () => {},
+        }
+    );
+};
+export const useCreateDecla = () => {
+    const authStore = useAuthStore();
+
+    return useMutation(
+        async (values) => {
+            const res = await axios.post("decla", values);
             return res.data;
         },
         {
@@ -62,12 +84,12 @@ export const useCreateUser = () => {
     );
 };
 
-export const useModifyUser = () => {
+export const useModifyDecla = () => {
     const authStore = useAuthStore();
 
     return useMutation(
         async (values) => {
-            const res = await axios.put(`client/${values.id}`, values);
+            const res = await axios.put(`decla/${values.id}`, values);
             return res.data;
         },
         {

@@ -16,11 +16,11 @@ import { ProductService } from "../../service/ProductService";
 
 import { Skeleton } from "primereact/skeleton";
 import { Link, useHistory } from "react-router-dom";
-import { useActivity, useActivityById, useDeleteActivityById, useCreateActivity, useModifyActivity } from "../../Hooks/api/activity.api";
+import { useActivityAll, useActivityById, useDeleteActivityById, useCreateActivity, useModifyActivity } from "../../Hooks/api/activity.api";
 import { useAuthDispatch } from "../../stores/auth.store.js";
 export const Activité = () => {
     // work
-    const ActivitysQuery = useActivity();
+    const ActivitysQuery = useActivityAll();
     const ActivityByIdQuery = useActivityById();
     const ActivityDeleteByIdQuery = useDeleteActivityById();
     const ActivityCreateQuery = useCreateActivity();
@@ -33,7 +33,7 @@ export const Activité = () => {
     let emptyProduct = {
         id: null,
         lib: "",
-        prix_uni: "",
+        prix_unitaire: "",
     };
 
     const [products, setProducts] = useState(null);
@@ -257,7 +257,7 @@ export const Activité = () => {
         return (
             <>
                 <span className="p-column-title">Code</span>
-                {rowData.code}
+                {rowData.lib}
             </>
         );
     };
@@ -266,7 +266,7 @@ export const Activité = () => {
         return (
             <>
                 <span className="p-column-title">Name</span>
-                {rowData.name}
+                {rowData.prix_unitaire}
             </>
         );
     };
@@ -378,7 +378,7 @@ export const Activité = () => {
                     ) : ActivitysQuery.isSuccess ? (
                         <DataTable
                             ref={dt}
-                            value={products}
+                            value={ActivitysQuery.data}
                             selection={selectedProducts}
                             onSelectionChange={(e) => setSelectedProducts(e.value)}
                             dataKey="id"
@@ -412,7 +412,7 @@ export const Activité = () => {
                         </div>
                         <div className="field">
                             <label htmlFor="Prix u">Prix unitaire</label>
-                            <InputText id="Prix u" value={product.prix_uni} onChange={(e) => onInputChange(e, "prix_uni")} required autoFocus className={classNames({ "p-invalid": submitted && !product.prix_uni })} />
+                            <InputText id="Prix u" value={product.prix_unitaire} onChange={(e) => onInputChange(e, "prix_unitaire")} required autoFocus className={classNames({ "p-invalid": submitted && !product.prix_uni })} />
                             {/* {submitted && !product.name && <small className="p-invalid">Prix unitaire is required.</small>} */}
                         </div>
                     </Dialog>

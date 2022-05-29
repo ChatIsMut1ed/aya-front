@@ -8,8 +8,19 @@ import { useAuthDispatch, useAuthStore } from "../../stores/auth.store";
 export const useObject = () => {
     const authStore = useAuthStore();
 
-    return useQuery(["Objects"], () => axios.get(`Object`).then((res) => res.data), {
-        enabled: authStore?.isLoggedIn === true && true,
+    return useQuery(["Objects"], () => axios.get(`objet`).then((res) => res.data), {
+        //enabled: authStore?.isLoggedIn === true && true,
+        onSuccess: () => {},
+        onError: () => {},
+        refetchOnWindowFocus: false,
+    });
+};
+
+export const useObjectAll = () => {
+    const authStore = useAuthStore();
+
+    return useQuery(["Objects"], () => axios.get(`objet/all`).then((res) => res.data), {
+        //enabled: authStore?.isLoggedIn === true && true,
         onSuccess: () => {},
         onError: () => {},
         refetchOnWindowFocus: false,
@@ -21,11 +32,11 @@ export const useObjectById = () => {
 
     return useMutation(
         async (values) => {
-            const res = await axios.get(`Object/${values}`);
+            const res = await axios.get(`objet/${values}`);
             return res.data;
         },
         {
-            enabled: authStore?.isLoggedIn === true && true,
+            //enabled: authStore?.isLoggedIn === true && true,
             onSuccess: () => {},
         }
     );
@@ -36,11 +47,11 @@ export const useDeleteObjectById = () => {
 
     return useMutation(
         async (values) => {
-            const res = await axios.get(`Object/${values}`);
+            const res = await axios.delete(`objet/${values}`);
             return res.data;
         },
         {
-            enabled: authStore?.isLoggedIn === true && true,
+            //enabled: authStore?.isLoggedIn === true && true,
             onSuccess: () => {},
         }
     );
@@ -51,11 +62,11 @@ export const useCreateObject = () => {
 
     return useMutation(
         async (values) => {
-            const res = await axios.post("Object", values);
+            const res = await axios.post("objet", values);
             return res.data;
         },
         {
-            enabled: authStore?.isLoggedIn === true && true,
+            //enabled: authStore?.isLoggedIn === true && true,
             onSuccess: () => {},
             onError: () => {},
         }
@@ -67,11 +78,11 @@ export const useModifyObj = () => {
 
     return useMutation(
         async (values) => {
-            const res = await axios.put(`Object/${values.id}`, values);
+            const res = await axios.put(`objet/${values.id}`, values);
             return res.data;
         },
         {
-            enabled: authStore?.isLoggedIn === true && true,
+            //enabled: authStore?.isLoggedIn === true && true,
             onSuccess: () => {},
             onError: () => {},
         }

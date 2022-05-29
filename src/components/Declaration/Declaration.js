@@ -4,15 +4,20 @@ import { useState } from "react";
 import { Calendar } from "primereact/calendar";
 import { Link, useHistory } from "react-router-dom";
 
-import { useCreateForage } from "../../Hooks/api/forage.api";
+import { useCreateDecla, useDeclaByCin } from "../../Hooks/api/declaration.api";
+import { useClient } from "../../Hooks/api/auth.api";
+
 import { useAuthDispatch } from "../../stores/auth.store.js";
 import { ProgressSpinner } from "primereact/progressspinner";
-
-export const Forme2 = () => {
+import { Dropdown } from "primereact/dropdown";
+export const Declaration = () => {
     // const [date1, setDate1] = useState(null);
     // work
     const authDispatch = useAuthDispatch();
+    const clientsQuery = useClient();
+    const clientQuery = useDeclaByCin();
     const history = useHistory();
+    const [selectedCity1, setSelectedCity1] = useState(null);
 
     const [ForageForm, setForageForm] = useState({
         id: null,
@@ -29,16 +34,32 @@ export const Forme2 = () => {
         type_plante: "",
         date_signature: "",
         space_t: "",
+        space_t: "",
+        space_t: "",
+        space_t: "",
+        space_t: "",
     });
 
     const [ForageFormErrors, setForageFormErrors] = useState({});
 
-    const ForageUserMutation = useCreateForage();
+    const DeclaMutation = useCreateDecla();
+    const onCityChange = async (e) => {
+        setSelectedCity1(e.value);
 
+        try {
+            await clientQuery.mutateAsync(e.value.name);
+            // history.push({
+            //     pathname: "/Declaration",
+            // });
+            setForageForm(clientQuery.data);
+        } catch (error) {
+            console.log(error);
+        }
+    };
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const result = await ForageUserMutation.mutateAsync(ForageForm);
+            const result = await DeclaMutation.mutateAsync(ForageForm);
             if (result.data.Forage_status === "successful") {
                 history.push({
                     pathname: "/Form2",
@@ -105,10 +126,23 @@ export const Forme2 = () => {
                             <span className="contact100-form-title">مطلب حول معطيات المائدة السطحية </span>
                             <div className="righ">
                                 <div className="zo">
+                                    <Dropdown value={selectedCity1} options={clientsQuery.isSuccess ? clientsQuery.data : []} onChange={onCityChange} optionLabel="name" placeholder="عدد بطاقة التعريف الوطنية" />
+                                    {/* <input value={ForageForm.cin} onChange={(e) => handleChange(e)} type="text" className="field" autoComplete="on" name="cin" placeholder="عدد بطاقة التعريف الوطنية" /> */}
+                                    <input value={ForageForm.nom_postulant} onChange={(e) => handleChange(e)} type="text" className="field" autoComplete="on" name="nom_postulant" placeholder="الإسم و اللقب " />
+                                    <input value={ForageForm.todaysdate} onChange={(e) => handleChange(e)} type="text" className="field" autoComplete="on" name="todaysdate" placeholder="المؤرخة بتونس بتاريخ " />
+                                    <input value={ForageForm.adresse} onChange={(e) => handleChange(e)} type="text" className="field" autoComplete="on" name="adresse" placeholder="العنوان" />
+                                    <input value={ForageForm.tel} onChange={(e) => handleChange(e)} type="text" className="field" autoComplete="on" name="tel" placeholder="الهاتف" />
+                                    <input value={ForageForm.tel} onChange={(e) => handleChange(e)} type="text" className="field" autoComplete="on" name="tel" placeholder="الهاتف" />
+                                    <input value={ForageForm.tel} onChange={(e) => handleChange(e)} type="text" className="field" autoComplete="on" name="tel" placeholder="الهاتف" />{" "}
                                     <input value={ForageForm.nom_postulant} onChange={(e) => handleChange(e)} type="text" className="field" autoComplete="on" name="nom_postulant" placeholder="الإسم و اللقب " />
                                     <input value={ForageForm.cin} onChange={(e) => handleChange(e)} type="text" className="field" autoComplete="on" name="cin" placeholder="عدد بطاقة التعريف الوطنية" />
                                     <input value={ForageForm.todaysdate} onChange={(e) => handleChange(e)} type="text" className="field" autoComplete="on" name="todaysdate" placeholder="المؤرخة بتونس بتاريخ " />
                                     <input value={ForageForm.adresse} onChange={(e) => handleChange(e)} type="text" className="field" autoComplete="on" name="adresse" placeholder="العنوان" />
+                                    <input value={ForageForm.tel} onChange={(e) => handleChange(e)} type="text" className="field" autoComplete="on" name="tel" placeholder="الهاتف" />
+                                    <input value={ForageForm.tel} onChange={(e) => handleChange(e)} type="text" className="field" autoComplete="on" name="tel" placeholder="الهاتف" />
+                                    <input value={ForageForm.tel} onChange={(e) => handleChange(e)} type="text" className="field" autoComplete="on" name="tel" placeholder="الهاتف" />
+                                    <input value={ForageForm.tel} onChange={(e) => handleChange(e)} type="text" className="field" autoComplete="on" name="tel" placeholder="الهاتف" />
+                                    <input value={ForageForm.tel} onChange={(e) => handleChange(e)} type="text" className="field" autoComplete="on" name="tel" placeholder="الهاتف" />
                                     <input value={ForageForm.tel} onChange={(e) => handleChange(e)} type="text" className="field" autoComplete="on" name="tel" placeholder="الهاتف" />
                                 </div>
 
@@ -139,7 +173,7 @@ export const Forme2 = () => {
 
                             <div className="container-contact100-form-btn">
                                 {ForageFormErrors?.message && <p style={{ color: "red" }}>{ForageFormErrors?.message}</p>}
-                                {ForageUserMutation.isLoading ? (
+                                {DeclaMutation.isLoading ? (
                                     <ProgressSpinner />
                                 ) : (
                                     <button className="contact100-form-btn" type="submit">

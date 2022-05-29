@@ -17,10 +17,13 @@ import { ProductService } from "../../service/ProductService";
 import { Skeleton } from "primereact/skeleton";
 import { Link, useHistory } from "react-router-dom";
 import { useDevisObj, useDevisObbjById, useDeleteDevisObbjById, useCreateDevisObbj, useModifyDevisObj } from "../../Hooks/api/devisObj.api";
+import { useObjectAll } from "../../Hooks/api/object.api";
 import { useAuthDispatch } from "../../stores/auth.store.js";
+import { Dropdown } from "primereact/dropdown";
 export const DevisObjet = () => {
     // work
     const DevisObjsQuery = useDevisObj();
+    const ObjsAllQuery = useObjectAll();
     const DevisObjByIdQuery = useDevisObbjById();
     const DevisObjDeleteByIdQuery = useDeleteDevisObbjById();
     const DevisObjCreateQuery = useCreateDevisObbj();
@@ -29,13 +32,12 @@ export const DevisObjet = () => {
     const history = useHistory();
     let emptyProduct = {
         id: null,
-        name: "",
+        // obj_id: "",
+        nom: "",
         responsable: "",
         ecartement: "",
         ha: "",
-        qts: "",
-        id_devis_obj: "",
-        date: "",
+        qts_totale: "",
     };
 
     const [formErrors, setFormErrors] = useState({});
@@ -48,9 +50,14 @@ export const DevisObjet = () => {
     const [selectedProducts, setSelectedProducts] = useState(null);
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
+    const [selectedCity1, setSelectedCity1] = useState(null);
+
     const toast = useRef(null);
     const dt = useRef(null);
 
+    const onCityChange = (e) => {
+        setSelectedCity1(e.value);
+    };
     useEffect(() => {
         const productService = new ProductService();
         productService.getProducts().then((data) => setProducts(data));
@@ -89,11 +96,12 @@ export const DevisObjet = () => {
             // product[key] = key !== "logo" ? value.trim() : value;
             formData.append(key, value);
         }
+        formData.append("obj_id", selectedCity1.code);
         if (product.id == null) {
             try {
                 await DevisObjCreateQuery.mutateAsync(formData);
                 history.push({
-                    pathname: "/DevisObj",
+                    pathname: "/DevisObjet",
                 });
                 setProducts(products);
                 setProductDialog(false);
@@ -106,9 +114,9 @@ export const DevisObjet = () => {
             }
         } else {
             try {
-                await DevisObjModifyQuery.mutateAsync(formData);
+                await DevisObjModifyQuery.mutateAsync(product);
                 history.push({
-                    pathname: "/DevisObj",
+                    pathname: "/DevisObjet",
                 });
                 setProducts(products);
                 setProductDialog(false);
@@ -164,7 +172,7 @@ export const DevisObjet = () => {
         try {
             await DevisObjDeleteByIdQuery.mutateAsync(product.id);
             history.push({
-                pathname: "/DevisObj",
+                pathname: "/DevisObjet",
             });
             setProducts(products);
             setDeleteProductDialog(false);
@@ -259,8 +267,16 @@ export const DevisObjet = () => {
         return (
             <>
                 <span className="p-column-title">Code</span>
-                {/* {rowData.code} */}
-                15872
+                {rowData.nom}
+            </>
+        );
+    };
+
+    const codeBodyTemplate1 = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Code</span>
+                {rowData.obj_id}
             </>
         );
     };
@@ -269,7 +285,7 @@ export const DevisObjet = () => {
         return (
             <>
                 <span className="p-column-title">Name</span>
-                {rowData.name}
+                {rowData.responsable}
             </>
         );
     };
@@ -279,7 +295,7 @@ export const DevisObjet = () => {
             <>
                 <span className="p-column-title">Image</span>
                 {/* <img src={`assets/demo/images/product/${rowData.image}`} alt={rowData.image} className="shadow-2" width="100" /> */}
-                1/8
+                {rowData.ha}
             </>
         );
     };
@@ -288,7 +304,16 @@ export const DevisObjet = () => {
         return (
             <>
                 <span className="p-column-title">Price</span>
-                {rowData.price}
+                {rowData.ecartement}
+            </>
+        );
+    };
+
+    const priceBodyTemplate1 = (rowData) => {
+        return (
+            <>
+                <span className="p-column-title">Price</span>
+                {rowData.qts_totale}
             </>
         );
     };
@@ -378,14 +403,14 @@ export const DevisObjet = () => {
                                     <Column header="HA" body={skeletonTemplate} headerStyle={{ width: "20%", minWidth: "10rem" }} className="bg-green-300 border-round-top"></Column>
                                     <Column field="Doit" header="Qts_Totale" body={skeletonTemplate} sortable headerStyle={{ width: "20%", minWidth: "8rem" }} className="bg-pink-200 border-round-top"></Column>
                                     <Column field="code" header="ID_Devis_Objet" sortable body={skeletonTemplate} headerStyle={{ width: "20%", minWidth: "10rem" }} className="bg-cyan-400 border-round-top"></Column>
-                                    <Column field="Date" header="Date" body={skeletonTemplate} sortable headerStyle={{ width: "20%", minWidth: "8rem" }} className="bg-indigo-300 border-round-top"></Column>
+                                    {/* <Column field="Date" header="Date" body={skeletonTemplate} sortable headerStyle={{ width: "20%", minWidth: "8rem" }} className="bg-indigo-300 border-round-top"></Column> */}
                                 </DataTable>
                             ))}
                         </>
                     ) : DevisObjsQuery.isSuccess ? (
                         <DataTable
                             ref={dt}
-                            value={products}
+                            value={DevisObjsQuery.data}
                             selection={selectedProducts}
                             onSelectionChange={(e) => setSelectedProducts(e.value)}
                             dataKey="id"
@@ -405,9 +430,9 @@ export const DevisObjet = () => {
                             <Column field="name" header="Responsable" sortable body={nameBodyTemplate} headerStyle={{ width: "20%", minWidth: "10rem" }} className="bg-indigo-300 border-round-top"></Column>
                             <Column field="price" header="Ecartement" body={priceBodyTemplate} sortable headerStyle={{ width: "20%", minWidth: "8rem" }} className="bg-pink-200 border-round-top"></Column>
                             <Column header="HA" body={imageBodyTemplate} headerStyle={{ width: "20%", minWidth: "10rem" }} className="bg-green-300 border-round-top"></Column>
-                            <Column field="Doit" header="Qts_Totale" body={priceBodyTemplate} sortable headerStyle={{ width: "20%", minWidth: "8rem" }} className="bg-pink-200 border-round-top"></Column>
-                            <Column field="code" header="ID_Devis_Objet" sortable body={codeBodyTemplate} headerStyle={{ width: "20%", minWidth: "10rem" }} className="bg-cyan-400 border-round-top"></Column>
-                            <Column field="Date" header="Date" body={categoryBodyTemplate} sortable headerStyle={{ width: "20%", minWidth: "8rem" }} className="bg-indigo-300 border-round-top"></Column>
+                            <Column field="Doit" header="Qts_Totale" body={priceBodyTemplate1} sortable headerStyle={{ width: "20%", minWidth: "8rem" }} className="bg-pink-200 border-round-top"></Column>
+                            <Column field="code" header="ID_Devis_Objet" sortable body={codeBodyTemplate1} headerStyle={{ width: "20%", minWidth: "10rem" }} className="bg-cyan-400 border-round-top"></Column>
+                            {/* <Column field="Date" header="Date" body={categoryBodyTemplate} sortable headerStyle={{ width: "20%", minWidth: "8rem" }} className="bg-indigo-300 border-round-top"></Column> */}
                             <Column body={actionBodyTemplate} style={{ width: "20px" }}></Column>
                         </DataTable>
                     ) : (
@@ -418,7 +443,7 @@ export const DevisObjet = () => {
                         {/* {product.image && <img src={`assets/demo/images/product/${product.image}`} alt={product.image} width="150" className="mt-0 mx-auto mb-5 block shadow-2" />} */}
                         <div className="field">
                             <label htmlFor="Nom">Nom</label>
-                            <InputText id="Nom" value={product.name} onChange={(e) => onInputChange(e, "name")} required autoFocus className={classNames({ "p-invalid": submitted && !product.name })} />
+                            <InputText id="Nom" value={product.nom} onChange={(e) => onInputChange(e, "nom")} required autoFocus className={classNames({ "p-invalid": submitted && !product.nom })} />
                             {/* {submitted && !product.name && <small className="p-invalid">Name is required.</small>} */}
                         </div>
                         <div className="field">
@@ -438,20 +463,21 @@ export const DevisObjet = () => {
                         </div>
                         <div className="field">
                             <label htmlFor="Qts Totale">Qts_Totale</label>
-                            <InputText id="Qts Totale" value={product.qts} onChange={(e) => onInputChange(e, "qts")} required autoFocus className={classNames({ "p-invalid": submitted && !product.qts })} />
+                            <InputText id="Qts Totale" value={product.qts_totale} onChange={(e) => onInputChange(e, "qts_totale")} required autoFocus className={classNames({ "p-invalid": submitted && !product.qts_totale })} />
                             {/* {submitted && !product.name && <small className="p-invalid">Name is required.</small>} */}
                         </div>
                         <div className="field">
                             <label htmlFor="IDDevisObjet">ID_Devis_Objet</label>
-                            <InputText id="IDDevisObjet" value={product.id_devis_obj} onChange={(e) => onInputChange(e, "id_devis_obj")} required autoFocus className={classNames({ "p-invalid": submitted && !product.id_devis_obj })} />
+                            <Dropdown value={selectedCity1} options={ObjsAllQuery.isSuccess ? ObjsAllQuery.data : []} onChange={onCityChange} optionLabel="name" placeholder="Select a City" />
+                            {/* <InputText id="IDDevisObjet" value={product.obj_id} onChange={(e) => onInputChange(e, "obj_id")} required autoFocus className={classNames({ "p-invalid": submitted && !product.obj_id })} /> */}
                             {/* {submitted && !product.name && <small className="p-invalid">Name is required.</small>} */}
                         </div>
 
-                        <div className="field">
+                        {/* <div className="field">
                             <label htmlFor="Date">Date</label>
                             <InputText id="Date" value={product.date} onChange={(e) => onInputChange(e, "date")} required autoFocus className={classNames({ "p-invalid": submitted && !product.date })} />
-                            {/* {submitted && !product.name && <small className="p-invalid">Name is required.</small>} */}
-                        </div>
+                            {submitted && !product.name && <small className="p-invalid">Name is required.</small>}
+                        </div> */}
                     </Dialog>
 
                     <Dialog visible={factureDialog} style={{ width: "450px" }} header="Product Details" modal className="p-fluid" footer={productDialogFooter} onHide={hideDialog}>
